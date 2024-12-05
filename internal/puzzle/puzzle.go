@@ -85,24 +85,18 @@ func NewPuzzle(cfg *config.Config) *Puzzle {
 	var parsedCells [][]int
 	if cfg.SplitLines {
 		rows = strings.Split(raw, "\n")
-		if cfg.SplitWords {
+
+		if cfg.SplitFields {
 			for _, row := range rows {
 				cells = append(cells, strings.Fields(row))
 			}
-			if cfg.ParseInts {
-				for i, row := range cells {
-					var parsed []int
-					for j, cell := range row {
-						n, err := strconv.Atoi(cell)
-						if err != nil {
-							log.Fatalf("error parsing %d/%d:  %s -  %v", (i + 1), (j + 1), cell, err)
-						}
-						parsed = append(parsed, n)
-					}
-					parsedCells = append(parsedCells, parsed)
-				}
+		} else if cfg.SplitWords {
+			for _, row := range rows {
+				cells = append(cells, strings.Split(row, cfg.SplitSep))
 			}
-		} else if cfg.ParseInts {
+		}
+
+		if cfg.ParseInts {
 			for i, row := range rows {
 				n, err := strconv.Atoi(row)
 				if err != nil {
@@ -110,9 +104,23 @@ func NewPuzzle(cfg *config.Config) *Puzzle {
 				}
 				parsedRows = append(parsedRows, n)
 			}
+
+			for i, row := range cells {
+				var parsed []int
+				for j, cell := range row {
+					n, err := strconv.Atoi(cell)
+					if err != nil {
+						log.Fatalf("error parsing %d/%d:  %s -  %v", (i + 1), (j + 1), cell, err)
+					}
+					parsed = append(parsed, n)
+				}
+				parsedCells = append(parsedCells, parsed)
+			}
 		}
-	} else if cfg.SplitWords {
+	} else if cfg.SplitFields {
 		rows = strings.Fields(raw)
+	} else if cfg.SplitWords {
+		rows = strings.Split(raw, cfg.SplitSep)
 	}
 
 	return &Puzzle{
