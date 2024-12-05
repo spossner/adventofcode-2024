@@ -17,13 +17,15 @@ func part2(dev bool) any {
 }
 
 func solve(dev bool, isPart2 bool) any {
-	if isPart2 {
-	}
 	cfg := config.NewConfig(DAY, dev) // split lines only
-	// cfg := config.NewConfig(DAY, dev, config.SplitWords, config.ParseInts)
+	if isPart2 {
+		// e.g. update dev sample file
+		// cfg.DevFile = "dev-2.txt"
+	}
 	p := puzzle.NewPuzzle(cfg)
-	fmt.Println(p.Data)
 	result := 0
+
+	fmt.Println(p.Data)
 
 	return result
 }
