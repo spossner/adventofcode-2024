@@ -20,21 +20,21 @@ type Puzzle struct {
 	ParsedCells [][]int
 }
 
-func fileNameByDay(day int, dev bool) string {
-	if dev {
-		return fmt.Sprintf("dev.txt")
+func fileNameByDay(cfg *config.Config) string {
+	if cfg.Dev {
+		return fmt.Sprintf(cfg.DevFile)
 	}
-	return fmt.Sprintf("%02d.txt", day)
+	return fmt.Sprintf("%02d.txt", cfg.Day)
 }
 
-func loadPuzzleInput(day int, dev bool) ([]byte, error) {
-	fileName := fileNameByDay(day, dev)
+func loadPuzzleInput(cfg *config.Config) ([]byte, error) {
+	fileName := fileNameByDay(cfg)
 	fmt.Println(fileName)
 	return os.ReadFile(fileName)
 }
 
-func writePuzzleInput(day int, data []byte) error {
-	return os.WriteFile(fileNameByDay(day, false), data, 0644)
+func writePuzzleInput(cfg *config.Config, data []byte) error {
+	return os.WriteFile(fileNameByDay(cfg), data, 0644)
 }
 
 func downloadPuzzleInput(day int) ([]byte, error) {
@@ -64,13 +64,13 @@ Hint: if using goland you can set the AOC_SESSION env variable in Settings > Go 
 
 func NewPuzzle(cfg *config.Config) *Puzzle {
 	fmt.Println("NEW PUZZlE FOR DAY", cfg.Day)
-	data, err := loadPuzzleInput(cfg.Day, cfg.Dev)
+	data, err := loadPuzzleInput(cfg)
 	if errors.Is(err, os.ErrNotExist) {
 		if cfg.Dev {
 			log.Fatalln("can not download dev test data")
 		}
 		data, err = downloadPuzzleInput(cfg.Day)
-		if err := writePuzzleInput(cfg.Day, data); err != nil {
+		if err := writePuzzleInput(cfg, data); err != nil {
 			fmt.Printf("error caching puzzle input: %v\n", err)
 		}
 	}

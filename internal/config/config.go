@@ -5,6 +5,7 @@ const YEAR = 2024
 type Config struct {
 	Day        int
 	Dev        bool
+	DevFile    string
 	Strip      bool
 	SplitLines bool
 	SplitWords bool
@@ -26,10 +27,17 @@ func ParseInts(cfg *Config) {
 	cfg.ParseInts = true
 }
 
+func WithDevFile(fileName string) ConfigFunc {
+	return func(cfg *Config) {
+		cfg.DevFile = fileName
+	}
+}
+
 func NewConfig(day int, dev bool, fn ...ConfigFunc) *Config {
 	cfg := &Config{
 		Day:        day,
 		Dev:        dev,
+		DevFile:    "dev.txt",
 		Strip:      true,
 		SplitLines: true,
 		SplitWords: false,
