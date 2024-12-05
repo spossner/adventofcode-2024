@@ -9,21 +9,21 @@ import (
 const DAY = -1
 
 func part1(dev bool) any {
-	return solve(dev, false)
+	cfg := config.NewConfig(DAY, dev) // split lines only
+	return solve(cfg, false)
 }
 
 func part2(dev bool) any {
-	return solve(dev, true)
+	cfg := config.NewConfig(DAY, dev, config.WithDevFile("dev.txt")) // split lines only, setting another dev file
+	return solve(cfg, true)
 }
 
-func solve(dev bool, isPart2 bool) any {
-	cfg := config.NewConfig(DAY, dev) // split lines only
-	if isPart2 {
-		// e.g. update dev sample file
-		// cfg.DevFile = "dev-2.txt"
-	}
+func solve(cfg *config.Config, isPart2 bool) any {
 	p := puzzle.NewPuzzle(cfg)
 	result := 0
+	if isPart2 {
+		fmt.Print("PART2")
+	}
 
 	fmt.Println(p.Data)
 
