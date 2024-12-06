@@ -1,5 +1,7 @@
 package utils
 
+import "slices"
+
 func Transpose[S ~[][]T, T any](slice S) S {
 	xl := len(slice[0])
 	yl := len(slice)
@@ -47,4 +49,8 @@ func Map[T, U any](slice []T, f func(T) (U, error)) ([]U, error) {
 		result = append(result, elNew)
 	}
 	return result, nil
+}
+
+func Any[S ~[]E, E any](s S, f func(E) bool) bool {
+	return slices.ContainsFunc(s, f)
 }
