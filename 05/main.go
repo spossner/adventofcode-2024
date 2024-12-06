@@ -27,7 +27,7 @@ func parseData(p *puzzle.Puzzle) (map[int][]int, [][]int) {
 
 	mustComeAfter := make(map[int][]int)
 	q, err := utils.Map(strings.Split(blocks[0], "\n"), utils.GetInts)
-	utils.AssertZero(err)
+	utils.AssertNil(err)
 	for _, pair := range q {
 		if l, ok := mustComeAfter[pair[0]]; ok {
 			mustComeAfter[pair[0]] = append(l, pair[1])
@@ -39,7 +39,7 @@ func parseData(p *puzzle.Puzzle) (map[int][]int, [][]int) {
 	}
 
 	updates, err := utils.Map(strings.Split(blocks[1], "\n"), utils.GetInts)
-	utils.AssertZero(err)
+	utils.AssertNil(err)
 	return mustComeAfter, updates
 }
 
@@ -72,24 +72,20 @@ Outer:
 		for _, el := range update {
 			for _, forbidden := range mustComeAfter[el] {
 				if _, ok := seen[forbidden]; ok {
-					//fmt.Println("FORBIDDEN", update)
 					wrong = append(wrong, update)
 					continue Outer
 				}
 			}
 			seen[el] = struct{}{}
 		}
-		//fmt.Println("OK", update, update[len(update)>>1])
 		result += update[len(update)>>1]
 	}
 
 	result2 := 0
 	for _, update := range wrong {
-		fmt.Println("PROCESSING", update)
 		fixed := make([]int, 0, len(update))
 		for _, v := range update {
 			fixed = insertOrdered(fixed, v, mustComeAfter)
-			//fmt.Printf("%d: inserted %v: %v\n", i, v, fixed)
 		}
 		result2 += fixed[len(fixed)>>1]
 	}
