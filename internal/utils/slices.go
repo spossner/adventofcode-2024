@@ -22,3 +22,29 @@ func Cut[S ~[]T, T any](slice S, index int) S {
 	newSlice = append(newSlice, slice[index+1:]...)
 	return newSlice
 }
+
+func Filter[S ~[]T, T any](slice S, f func(T) (bool, error)) (S, error) {
+	result := make(S, 0)
+	for _, el := range slice {
+		ok, err := f(el)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			result = append(result, el)
+		}
+	}
+	return result, nil
+}
+
+func Map[T, U any](slice []T, f func(T) (U, error)) ([]U, error) {
+	result := make([]U, 0)
+	for _, el := range slice {
+		elNew, err := f(el)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, elNew)
+	}
+	return result, nil
+}
