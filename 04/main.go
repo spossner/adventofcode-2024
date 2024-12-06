@@ -20,7 +20,7 @@ func part2(dev bool) any {
 	p := puzzle.NewPuzzle(cfg)
 	result := 0
 
-	bounds := rectangle.NewRectangle(0, 0, len(p.Cells[0]), len(p.Cells))
+	bounds := rectangle.NewBounds(p.Cells)
 
 	for y, row := range p.Cells {
 		if y == 0 || y == bounds.Height-1 {
@@ -80,7 +80,6 @@ func solve(cfg *config.Config, isPart2 bool) any {
 						continue Outer
 					}
 				}
-				// fmt.Println("found XMAS at", x, y, "->", pos.X, pos.Y)
 				result++
 			}
 		}
