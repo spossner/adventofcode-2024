@@ -8,14 +8,16 @@ import (
 
 const DAY = -1
 
+func createConfig(dev bool) *config.Config {
+	return config.NewConfig(DAY, dev)
+}
+
 func part1(dev bool) any {
-	cfg := config.NewConfig(DAY, dev) // split lines only
-	return solve(cfg, false)
+	return solve(createConfig(dev), false)
 }
 
 func part2(dev bool) any {
-	cfg := config.NewConfig(DAY, dev, config.WithDevFile("dev.txt")) // split lines only, setting another dev file
-	return solve(cfg, true)
+	return solve(createConfig(dev), true)
 }
 
 func solve(cfg *config.Config, isPart2 bool) any {
