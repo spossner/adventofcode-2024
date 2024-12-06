@@ -22,7 +22,7 @@ func solve(cfg *config.Config, isPart2 bool) any {
 	p := puzzle.NewPuzzle(cfg)
 	result := 0
 	if isPart2 {
-		fmt.Print("PART2")
+		fmt.Println("PART2")
 	}
 
 	fmt.Println(p.Data)
