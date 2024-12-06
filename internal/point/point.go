@@ -4,28 +4,44 @@ type Point struct {
 	X, Y int
 }
 
-var DIRECT_ADJACENT_POINTS = []Point{
-	Point{0, -1},
-	Point{-1, 0},
-	Point{1, 0},
-	Point{0, 1},
+var (
+	UP    = Point{0, -1}
+	DOWN  = Point{0, 1}
+	LEFT  = Point{-1, 0}
+	RIGHT = Point{1, 0}
+
+	NORTH = UP
+	SOUTH = DOWN
+	WEST  = LEFT
+	EAST  = RIGHT
+
+	DIRECT_ADJACENT_POINTS = []Point{
+		Point{0, -1},
+		Point{-1, 0},
+		Point{1, 0},
+		Point{0, 1},
+	}
+
+	ADJACENT_POINTS = []Point{
+		Point{-1, -1},
+		Point{0, -1},
+		Point{1, -1},
+		Point{-1, 0},
+		Point{1, 0},
+		Point{-1, 1},
+		Point{0, 1},
+		Point{1, 1},
+	}
+)
+
+func (p Point) Translate(dx, dy int) Point {
+	return Point{p.X + dx, p.Y + dy}
 }
 
-var ADJACENT_POINTS = []Point{
-	Point{-1, -1},
-	Point{0, -1},
-	Point{1, -1},
-	Point{-1, 0},
-	Point{1, 0},
-	Point{-1, 1},
-	Point{0, 1},
-	Point{1, 1},
+func (p Point) RotateRight() Point {
+	return Point{-p.Y, p.X}
 }
 
-func NewPoint(x, y int) Point {
-	return Point{x, y}
-}
-
-func (v Point) Translate(dx, dy int) Point {
-	return Point{v.X + dx, v.Y + dy}
+func (p Point) RotateLeft() Point {
+	return Point{p.Y, -p.X}
 }
