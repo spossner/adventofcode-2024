@@ -19,9 +19,11 @@ type ConfigFunc func(cfg *Config)
 func NoLineSplit(cfg *Config) {
 	cfg.SplitLines = false
 }
-func NoStrip(cfg *Config) {
+
+/*func NoStrip(cfg *Config) {
 	cfg.Strip = false
-}
+}*/
+
 func SplitFields(cfg *Config) {
 	cfg.SplitFields = true
 }
