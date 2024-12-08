@@ -42,15 +42,14 @@ func AssertNotNil[T any](value T, msgAndArgs ...any) {
 	v := reflect.ValueOf(value)
 	if v.IsValid() {
 		kind := v.Kind()
-		if !(kind == reflect.Ptr ||
+		if (kind == reflect.Ptr ||
 			kind == reflect.Interface ||
 			kind == reflect.Slice ||
 			kind == reflect.Map ||
 			kind == reflect.Chan ||
-			kind == reflect.Func) ||
+			kind == reflect.Func) &&
 			v.IsNil() {
-			return
+			log.Fatalf(FormatMsgAndArgs(fmt.Sprintf("Expected non nil value but got: %v", value), msgAndArgs...))
 		}
 	}
-	log.Fatalf(FormatMsgAndArgs(fmt.Sprintf("Expected non nil value but got: %v", value), msgAndArgs...))
 }
