@@ -10,7 +10,7 @@ import (
 const DAY = 1
 
 func part1(dev bool) any {
-	cfg := config.NewConfig(DAY, dev, config.SplitWords, config.ParseInts)
+	cfg := config.NewConfig(DAY, dev, config.SplitFields, config.GetInts)
 	p := puzzle.NewPuzzle(cfg)
 	total := 0
 	cols := utils.Transpose(p.ParsedCells)

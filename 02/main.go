@@ -18,7 +18,7 @@ func part2(dev bool) any {
 }
 
 func solve(dev bool, isPart2 bool) any {
-	cfg := config.NewConfig(DAY, dev, config.SplitWords, config.ParseInts)
+	cfg := config.NewConfig(DAY, dev, config.SplitFields, config.GetInts)
 	p := puzzle.NewPuzzle(cfg)
 	result := 0
 
