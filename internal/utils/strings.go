@@ -7,7 +7,7 @@ import (
 )
 
 func GetInts(s string) ([]int, error) {
-	re := regexp.MustCompile(`((?:-|\+)?\d+)`)
+	re := regexp.MustCompile(`([-+]?\d+)`)
 	matches := re.FindAllSubmatch([]byte(s), -1)
 	ints := make([]int, 0)
 	for _, m := range matches {
