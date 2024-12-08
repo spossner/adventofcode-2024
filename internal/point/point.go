@@ -5,33 +5,52 @@ type Point struct {
 }
 
 var (
-	UP    = Point{0, -1}
-	DOWN  = Point{0, 1}
-	LEFT  = Point{-1, 0}
-	RIGHT = Point{1, 0}
-
-	NORTH = UP
-	SOUTH = DOWN
-	WEST  = LEFT
-	EAST  = RIGHT
+	NORTH = Point{0, -1}
+	SOUTH = Point{0, 1}
+	WEST  = Point{-1, 0}
+	EAST  = Point{1, 0}
 
 	NORTH_EAST = Point{1, -1}
 	SOUTH_EAST = Point{1, 1}
 	NORTH_WEST = Point{-1, -1}
 	SOUTH_WEST = Point{-1, 1}
 
-	DIRECT_ADJACENT_POINTS = []Point{NORTH, EAST, SOUTH, WEST}
+	DIRECT_ADJACENT_POINTS = []Point{
+		NORTH,
+		EAST,
+		SOUTH,
+		WEST,
+	}
 
 	ADJACENT_POINTS = []Point{
-		{-1, -1},
-		{0, -1},
-		{1, -1},
-		{-1, 0},
-		{1, 0},
-		{-1, 1},
-		{0, 1},
-		{1, 1},
+		NORTH,
+		NORTH_EAST,
+		EAST,
+		SOUTH_EAST,
+		SOUTH,
+		SOUTH_WEST,
+		WEST,
+		NORTH_WEST,
 	}
+
+	OPPOSITE_DIRECTION = map[Point]Point{
+		NORTH: SOUTH,
+		SOUTH: NORTH,
+		EAST:  WEST,
+		WEST:  EAST,
+	}
+
+	DIRECTIONS = map[string]Point{
+		"N": NORTH, "n": NORTH, "U": NORTH, "u": NORTH, "^": NORTH,
+		"S": SOUTH, "s": SOUTH, "D": SOUTH, "d": SOUTH, "v": SOUTH,
+		"E": EAST, "e": EAST, "R": EAST, "r": EAST, ">": EAST,
+		"W": WEST, "w": WEST, "L": WEST, "l": WEST, "<": WEST,
+	}
+
+	UP    = NORTH
+	DOWN  = SOUTH
+	LEFT  = WEST
+	RIGHT = EAST
 )
 
 func (p Point) Translate(dx, dy int) Point {
