@@ -97,3 +97,46 @@ func Test_AdjacentPoints(t *testing.T) {
 		t.Errorf("ADJACENT_POINTS() = %v, does not contain the desired adjacent points N,S,W,E,NE,SE,SW and NW", ADJACENT_POINTS)
 	}
 }
+
+func Test_OppositeDirections(t *testing.T) {
+	if !(len(OPPOSITE_DIRECTION) == 4 &&
+		OPPOSITE_DIRECTION[NORTH] == SOUTH &&
+		OPPOSITE_DIRECTION[SOUTH] == NORTH &&
+		OPPOSITE_DIRECTION[WEST] == EAST &&
+		OPPOSITE_DIRECTION[EAST] == WEST) {
+		t.Errorf("OPPOSITE_DIRECTION() = %v, does not contain the desired opposite directions", OPPOSITE_DIRECTION)
+	}
+}
+
+func Test_Directions(t *testing.T) {
+	tests := []struct {
+		c    string
+		want Point
+	}{
+		{"w", WEST},
+		{"W", WEST},
+		{"l", WEST},
+		{"L", WEST},
+		{"<", WEST},
+		{">", EAST},
+		{"r", EAST},
+		{"R", EAST},
+		{"e", EAST},
+		{"E", EAST},
+		{"^", UP},
+		{"U", UP},
+		{"n", NORTH},
+		{"N", NORTH},
+		{"d", DOWN},
+		{"v", DOWN},
+		{"S", SOUTH},
+		{"D", SOUTH},
+	}
+	for _, tt := range tests {
+		t.Run(tt.c, func(t *testing.T) {
+			if got := DIRECTIONS[tt.c]; got != tt.want {
+				t.Errorf("DIRECTIONS[%s] = %v, want %v", tt.c, got, tt.want)
+			}
+		})
+	}
+}
