@@ -16,8 +16,8 @@ func TestFromSlice(t *testing.T) {
 	}
 	tests := []testCase[int]{
 		{"no sets", args[int]{[][]int{}}, Set[int]{}},
-		{"simple", args[int]{[][]int{[]int{1, 2, 3, 5, 8, 13, 21, 34}}}, Set[int]{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}}},
-		{"two sets", args[int]{[][]int{[]int{1, 2, 3, 5}, []int{8, 13, 21, 34}}}, Set[int]{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}}},
+		{"simple", args[int]{[][]int{{1, 2, 3, 5, 8, 13, 21, 34}}}, Set[int]{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}}},
+		{"two sets", args[int]{[][]int{{1, 2, 3, 5}, {8, 13, 21, 34}}}, Set[int]{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -116,7 +116,7 @@ func TestSet_Intersect(t *testing.T) {
 		{"equal sets",
 			args[int]{
 				[]Set[int]{
-					Set[int]{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}},
+					{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}},
 					{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}}},
 			}, Set[int]{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}},
 		},
@@ -218,8 +218,8 @@ func TestSet_Subtract(t *testing.T) {
 	}
 	tests := []testCase[byte]{
 		{"simple", Set[byte]{0x32: struct{}{}, 0xff: struct{}{}}, args[byte]{[]Set[byte]{{0x32: struct{}{}}}}, Set[byte]{0xff: struct{}{}}},
-		{"nothing to substract", Set[byte]{0x32: struct{}{}, 0xff: struct{}{}}, args[byte]{}, Set[byte]{0x32: struct{}{}, 0xff: struct{}{}}},
-		{"substract multiple sets",
+		{"nothing to subtract", Set[byte]{0x32: struct{}{}, 0xff: struct{}{}}, args[byte]{}, Set[byte]{0x32: struct{}{}, 0xff: struct{}{}}},
+		{"subtract multiple sets",
 			Set[byte]{0x20: struct{}{}, 0x23: struct{}{}, 0x32: struct{}{}, 0x42: struct{}{}, 0xaa: struct{}{}, 0xff: struct{}{}},
 			args[byte]{
 				[]Set[byte]{
@@ -232,8 +232,8 @@ func TestSet_Subtract(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Substract(tt.s, tt.args.others...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Substract() = %v, want %v", got, tt.want)
+			if got := Subtract(tt.s, tt.args.others...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Subtract() = %v, want %v", got, tt.want)
 			}
 		})
 	}

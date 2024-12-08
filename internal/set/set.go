@@ -49,7 +49,7 @@ Outer:
 	return set
 }
 
-func Substract[T comparable](set Set[T], others ...Set[T]) Set[T] {
+func Subtract[T comparable](set Set[T], others ...Set[T]) Set[T] {
 	newSet := make(Set[T])
 Outer:
 	for item := range set {
