@@ -106,11 +106,11 @@ func NewPuzzle(cfg *config.Config) *Puzzle {
 		for i, row := range rows {
 			parsed, err := utils.GetInts(row)
 			if err != nil {
-				log.Fatalf("error parsing line %d:  %s -  %v", (i + 1), row, err)
+				log.Fatalf("error parsing line %d:  %s -  %v", i+1, row, err)
 			}
 			switch len(parsed) {
 			case 0:
-				log.Fatalf("no number found in line %d:  %s", (i + 1), row)
+				log.Fatalf("no number found in line %d:  %s", i+1, row)
 			case 1:
 				parsedRows = append(parsedRows, parsed[0])
 			default:
@@ -124,7 +124,7 @@ func NewPuzzle(cfg *config.Config) *Puzzle {
 			for j, cell := range row {
 				n, err := strconv.Atoi(cell)
 				if err != nil {
-					log.Fatalf("error parsing %d/%d:  %s -  %v", (i + 1), (j + 1), cell, err)
+					log.Fatalf("error parsing %d/%d:  %s -  %v", i+1, j+1, cell, err)
 				}
 				parsed = append(parsed, n)
 			}
