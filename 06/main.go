@@ -6,6 +6,7 @@ import (
 	"github.com/spossner/aoc2024/internal/point"
 	"github.com/spossner/aoc2024/internal/puzzle"
 	"github.com/spossner/aoc2024/internal/rectangle"
+	"github.com/spossner/aoc2024/internal/set"
 	"github.com/spossner/aoc2024/internal/utils"
 )
 
@@ -47,8 +48,8 @@ type Guard struct {
 	direction point.Point
 }
 
-func findPath(pos, direction point.Point, cells [][]string) (utils.Set[Guard], bool) {
-	seen := utils.NewSet(Guard{pos, direction})
+func findPath(pos, direction point.Point, cells [][]string) (set.Set[Guard], bool) {
+	seen := set.NewSet(Guard{pos, direction})
 	bounds := rectangle.NewBounds(cells)
 	for {
 		newPos := pos.Translate(direction.X, direction.Y)
@@ -61,7 +62,7 @@ func findPath(pos, direction point.Point, cells [][]string) (utils.Set[Guard], b
 		}
 		newGuard := Guard{newPos, direction}
 		if seen.Contains(newGuard) {
-			return utils.Set[Guard]{}, false
+			return set.Set[Guard]{}, false
 		}
 		seen.Add(newGuard)
 		pos = newPos
