@@ -15,12 +15,12 @@ var (
 	WEST  = LEFT
 	EAST  = RIGHT
 
-	DIRECT_ADJACENT_POINTS = []Point{
-		{0, -1},
-		{-1, 0},
-		{1, 0},
-		{0, 1},
-	}
+	NORTH_EAST = Point{1, -1}
+	SOUTH_EAST = Point{1, 1}
+	NORTH_WEST = Point{-1, -1}
+	SOUTH_WEST = Point{-1, 1}
+
+	DIRECT_ADJACENT_POINTS = []Point{NORTH, EAST, SOUTH, WEST}
 
 	ADJACENT_POINTS = []Point{
 		{-1, -1},

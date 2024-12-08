@@ -2,6 +2,7 @@ package point
 
 import (
 	"reflect"
+	"slices"
 	"testing"
 )
 
@@ -15,6 +16,10 @@ func TestPoint_RotateLeft(t *testing.T) {
 		{"right", RIGHT, UP},
 		{"down", DOWN, RIGHT},
 		{"left", LEFT, DOWN},
+		{"north", NORTH, LEFT},
+		{"east", EAST, UP},
+		{"south", SOUTH, RIGHT},
+		{"west", WEST, DOWN},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -66,5 +71,29 @@ func TestPoint_Translate(t *testing.T) {
 				t.Errorf("Translate() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func Test_DirectAdjacentPoints(t *testing.T) {
+	if !(len(DIRECT_ADJACENT_POINTS) == 4 &&
+		slices.Contains(DIRECT_ADJACENT_POINTS, NORTH) &&
+		slices.Contains(DIRECT_ADJACENT_POINTS, SOUTH) &&
+		slices.Contains(DIRECT_ADJACENT_POINTS, WEST) &&
+		slices.Contains(DIRECT_ADJACENT_POINTS, EAST)) {
+		t.Errorf("DIRECT_ADJACENT_POINTS() = %v, does not contain the desired direct adjacent points N,S,W and E", DIRECT_ADJACENT_POINTS)
+	}
+}
+
+func Test_AdjacentPoints(t *testing.T) {
+	if !(len(ADJACENT_POINTS) == 8 &&
+		slices.Contains(ADJACENT_POINTS, NORTH) &&
+		slices.Contains(ADJACENT_POINTS, SOUTH) &&
+		slices.Contains(ADJACENT_POINTS, WEST) &&
+		slices.Contains(ADJACENT_POINTS, EAST) &&
+		slices.Contains(ADJACENT_POINTS, NORTH_EAST) &&
+		slices.Contains(ADJACENT_POINTS, SOUTH_EAST) &&
+		slices.Contains(ADJACENT_POINTS, SOUTH_WEST) &&
+		slices.Contains(ADJACENT_POINTS, NORTH_WEST)) {
+		t.Errorf("ADJACENT_POINTS() = %v, does not contain the desired adjacent points N,S,W,E,NE,SE,SW and NW", ADJACENT_POINTS)
 	}
 }
