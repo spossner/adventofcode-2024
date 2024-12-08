@@ -1,6 +1,9 @@
 package utils
 
-import "slices"
+import (
+	"iter"
+	"slices"
+)
 
 func Transpose[S ~[][]T, T any](slice S) S {
 	xl := len(slice[0])
@@ -53,4 +56,16 @@ func Map[T, U any](slice []T, f func(T) (U, error)) ([]U, error) {
 
 func Any[S ~[]E, E any](s S, f func(E) bool) bool {
 	return slices.ContainsFunc(s, f)
+}
+
+func Batched[S ~[]E, E any](s S, n int) iter.Seq2[int, S] {
+	return func(yield func(int, S) bool) {
+		loop := 0
+		for i := 0; i < len(s); i += n {
+			if !yield(loop, s[i:min(i+n, len(s))]) {
+				break
+			}
+			loop++
+		}
+	}
 }

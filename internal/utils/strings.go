@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"iter"
 	"regexp"
 	"strconv"
 )
@@ -29,4 +30,16 @@ func FormatMsgAndArgs(defaultMessage string, msgAndArgs ...any) string {
 		panic("message argument to assert function must be a fmt string")
 	}
 	return fmt.Sprintf(format, msgAndArgs[1:]...)
+}
+
+func BatchedStrings(text string, n int) iter.Seq2[int, string] {
+	return func(yield func(int, string) bool) {
+		loop := 0
+		for i := 0; i < len(text); i += n {
+			if !yield(loop, text[i:min(i+n, len(text))]) {
+				break
+			}
+			loop++
+		}
+	}
 }

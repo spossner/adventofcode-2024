@@ -186,3 +186,28 @@ func TestTranspose(t *testing.T) {
 		})
 	}
 }
+
+func TestBatched(t *testing.T) {
+	type args[S ~[]E, E any] struct {
+		s S
+		n int
+	}
+	type testCase[S ~[]E, E any] struct {
+		name string
+		args args[S, E]
+		want []S
+	}
+	tests := []testCase[[]byte, byte]{
+		{"simple", args[[]byte, byte]{[]byte("Sebastian"), 3}, [][]byte{[]byte("Seb"), []byte("ast"), []byte("ian")}},
+		{"not aligned", args[[]byte, byte]{[]byte("Sebastian"), 4}, [][]byte{[]byte("Seba"), []byte("stia"), []byte("n")}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for i, batch := range Batched(tt.args.s, tt.args.n) {
+				if !reflect.DeepEqual(batch, tt.want[i]) {
+					t.Errorf("Batched()[%d] = %v, want %v", i, batch, tt.want[i])
+				}
+			}
+		})
+	}
+}

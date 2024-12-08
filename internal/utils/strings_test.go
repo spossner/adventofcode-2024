@@ -34,3 +34,27 @@ func TestGetInts(t *testing.T) {
 		})
 	}
 }
+
+func TestBatchedStrings(t *testing.T) {
+	type args struct {
+		text string
+		n    int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{"simple", args{"Sebastian", 3}, []string{"Seb", "ast", "ian"}},
+		{"unaligned", args{"Sebastian", 4}, []string{"Seba", "stia", "n"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for i, b := range BatchedStrings(tt.args.text, tt.args.n) {
+				if !reflect.DeepEqual(b, tt.want[i]) {
+					t.Errorf("BatchedStrings()[%d] = %v, want %v", i, b, tt.want)
+				}
+			}
+		})
+	}
+}
