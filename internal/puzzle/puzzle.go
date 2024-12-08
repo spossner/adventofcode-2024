@@ -55,7 +55,7 @@ Hint: if using goland you can set the AOC_SESSION env variable in Settings > Go 
 	if err != nil {
 		return nil, err
 	}
-	defer res.Body.Close()
+	defer func() { _ = res.Body.Close() }()
 	data, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
