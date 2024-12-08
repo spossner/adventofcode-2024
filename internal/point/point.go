@@ -38,6 +38,14 @@ func (p Point) Translate(dx, dy int) Point {
 	return Point{p.X + dx, p.Y + dy}
 }
 
+func (p Point) Add(other Point) Point {
+	return Point{p.X + other.X, p.Y + other.Y}
+}
+
+func (p Point) Mul(scale float64) Point {
+	return Point{int(float64(p.X) * scale), int(float64(p.Y) * scale)}
+}
+
 func (p Point) RotateRight() Point {
 	return Point{-p.Y, p.X}
 }
