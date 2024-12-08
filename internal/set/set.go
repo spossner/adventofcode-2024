@@ -1,4 +1,4 @@
-package utils
+package set
 
 type Set[T comparable] map[T]struct{}
 
@@ -10,9 +10,9 @@ func NewSet[T comparable](items ...T) Set[T] {
 	return set
 }
 
-func CopySet[T comparable](set Set[T]) Set[T] {
+func (s Set[T]) Copy() Set[T] {
 	newSet := make(Set[T])
-	for k := range set {
+	for k := range s {
 		newSet[k] = struct{}{}
 	}
 	return newSet
@@ -78,10 +78,14 @@ func (s Set[T]) Contains(item T) bool {
 	return ok
 }
 
-func (s Set[T]) Add(item T) {
-	s[item] = struct{}{}
+func (s Set[T]) Add(items ...T) {
+	for _, item := range items {
+		s[item] = struct{}{}
+	}
 }
 
-func (s Set[T]) Remove(item T) {
-	delete(s, item)
+func (s Set[T]) Remove(items ...T) {
+	for _, item := range items {
+		delete(s, item)
+	}
 }
