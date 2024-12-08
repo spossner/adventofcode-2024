@@ -16,21 +16,21 @@ var (
 	EAST  = RIGHT
 
 	DIRECT_ADJACENT_POINTS = []Point{
-		Point{0, -1},
-		Point{-1, 0},
-		Point{1, 0},
-		Point{0, 1},
+		{0, -1},
+		{-1, 0},
+		{1, 0},
+		{0, 1},
 	}
 
 	ADJACENT_POINTS = []Point{
-		Point{-1, -1},
-		Point{0, -1},
-		Point{1, -1},
-		Point{-1, 0},
-		Point{1, 0},
-		Point{-1, 1},
-		Point{0, 1},
-		Point{1, 1},
+		{-1, -1},
+		{0, -1},
+		{1, -1},
+		{-1, 0},
+		{1, 0},
+		{-1, 1},
+		{0, 1},
+		{1, 1},
 	}
 )
 
