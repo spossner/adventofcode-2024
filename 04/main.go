@@ -69,7 +69,7 @@ func solve(cfg *config.Config, isPart2 bool) any {
 
 		Outer:
 			for _, direction := range point.ADJACENT_POINTS {
-				pos := point.Point{x, y}
+				pos := point.Point{X: x, Y: y}
 
 				for _, cNext := range word[1:] {
 					pos = pos.Translate(direction.X, direction.Y)

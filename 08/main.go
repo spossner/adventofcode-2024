@@ -42,7 +42,7 @@ func solve(cfg *config.Config, isPart2 bool) any {
 			if !ok {
 				coords = []point.Point{}
 			}
-			points[c] = append(coords, point.Point{x, y})
+			points[c] = append(coords, point.Point{X: x, Y: y})
 		}
 	}
 	bounds := rectangle.NewBounds(p.Cells)
@@ -58,7 +58,7 @@ func solve(cfg *config.Config, isPart2 bool) any {
 			for j := i + 1; j < len(adj); j++ {
 				p1 := adj[i]
 				p2 := adj[j]
-				d := point.Point{p2.X - p1.X, p2.Y - p1.Y}
+				d := point.Point{X: p2.X - p1.X, Y: p2.Y - p1.Y}
 
 				for {
 					a1 := p1.Add(d.Mul(-1.0))

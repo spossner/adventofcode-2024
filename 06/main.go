@@ -36,7 +36,7 @@ func findGuard(cells [][]string) (pos point.Point, direction point.Point, ok boo
 	for y, row := range cells {
 		for x, cell := range row {
 			if direction, ok := DIRECTIONS[cell]; ok {
-				return point.Point{x, y}, direction, true
+				return point.Point{X: x, Y: y}, direction, true
 			}
 		}
 	}
