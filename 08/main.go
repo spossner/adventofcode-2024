@@ -7,15 +7,13 @@ import (
 	"github.com/spossner/aoc2024/internal/puzzle"
 	"github.com/spossner/aoc2024/internal/rectangle"
 	"github.com/spossner/aoc2024/internal/set"
-	"log"
+	"github.com/spossner/aoc2024/internal/utils"
 )
 
 const DAY = 8
 
 func createConfig(dev bool) *config.Config {
-	if DAY == -1 {
-		log.Panic("DAY not configured")
-	}
+	utils.AssertNotEqual(DAY, -1, "did not configure the DAY")
 	return config.NewConfig(DAY, dev, config.WithSplitWords(""))
 }
 
