@@ -19,13 +19,25 @@ func formatMessage(defaultMsg string, msgAndArgs ...any) string {
 
 func AssertTrue(value bool, msgAndArgs ...any) {
 	if !value {
-		log.Fatalln(formatMessage("Expected true but got false", msgAndArgs))
+		log.Fatalln(formatMessage("Expected true but got false", msgAndArgs...))
 	}
 }
 
 func AssertFalse(value bool, msgAndArgs ...any) {
 	if value {
-		log.Fatalln(formatMessage("Expected false but got true", msgAndArgs))
+		log.Fatalln(formatMessage("Expected false but got true", msgAndArgs...))
+	}
+}
+
+func AssertEqual[T comparable](a, b T, msgAndArgs ...any) {
+	if a != b {
+		log.Fatalf(formatMessage(fmt.Sprintf("Expected values %v and %v to be equal", a, b), msgAndArgs...))
+	}
+}
+
+func AssertNotEqual[T comparable](a, b T, msgAndArgs ...any) {
+	if a == b {
+		log.Fatalf(formatMessage(fmt.Sprintf("Expected values %v and %v not to be equal", a, b), msgAndArgs...))
 	}
 }
 
@@ -34,7 +46,7 @@ func AssertNil[T any](value T, msgAndArgs ...any) {
 	if !v.IsValid() {
 		return
 	}
-	log.Fatalf(formatMessage(fmt.Sprintf("Expected nil value but got: %v", value), msgAndArgs))
+	log.Fatalf(formatMessage(fmt.Sprintf("Expected nil value but got: %v", value), msgAndArgs...))
 }
 
 func AssertNotNil[T any](value T, msgAndArgs ...any) {
@@ -51,5 +63,5 @@ func AssertNotNil[T any](value T, msgAndArgs ...any) {
 			return
 		}
 	}
-	log.Fatalf(formatMessage(fmt.Sprintf("Expected non nil value but got: %v", value), msgAndArgs))
+	log.Fatalf(formatMessage(fmt.Sprintf("Expected non nil value but got: %v", value), msgAndArgs...))
 }
