@@ -123,15 +123,32 @@ func TestQueue_ExtendLeft(t *testing.T) {
 	}
 	type testCase[T any] struct {
 		name string
-		q    Queue[T]
+		q    *Queue[T]
 		args args[T]
+		want []T
 	}
 	tests := []testCase[byte]{
-		// TODO: Add test cases.
+		{"simple",
+			NewQueue[byte](0x23, 0x40, 0x6c),
+			args[byte]{
+				[]byte{0x01},
+			},
+			[]byte{0x01, 0x23, 0x40, 0x6c},
+		},
+		{"multi",
+			NewQueue[byte](0x23, 0x40, 0x6c),
+			args[byte]{
+				[]byte{0x09, 0x05, 0x01},
+			},
+			[]byte{0x01, 0x05, 0x09, 0x23, 0x40, 0x6c},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.q.ExtendLeft(tt.args.values...)
+			if !reflect.DeepEqual(tt.q.List(), tt.want) {
+				t.Errorf("ExtendLeft() = %v, want %v", tt.q.List(), tt.want)
+			}
 		})
 	}
 }
@@ -139,11 +156,12 @@ func TestQueue_ExtendLeft(t *testing.T) {
 func TestQueue_Len(t *testing.T) {
 	type testCase[T any] struct {
 		name string
-		q    Queue[T]
+		q    *Queue[T]
 		want int
 	}
 	tests := []testCase[int]{
-		// TODO: Add test cases.
+		{"simple", NewQueue[int](1, 2, 3), 3},
+		{"empty", NewQueue[int](), 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -157,11 +175,11 @@ func TestQueue_Len(t *testing.T) {
 func TestQueue_Peek(t *testing.T) {
 	type testCase[T any] struct {
 		name string
-		q    Queue[T]
-		want any
+		q    *Queue[T]
+		want T
 	}
 	tests := []testCase[string]{
-		// TODO: Add test cases.
+		{"simple", NewQueue[string]("Seppo", "Vera", "Carlotta"), "Seppo"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -175,21 +193,22 @@ func TestQueue_Peek(t *testing.T) {
 func TestQueue_Pop(t *testing.T) {
 	type testCase[T any] struct {
 		name  string
-		q     Queue[T]
+		q     *Queue[T]
 		want  T
-		want1 bool
+		found bool
 	}
 	tests := []testCase[int]{
-		// TODO: Add test cases.
+		{"simple", NewQueue[int](1, 2, 3, 4, 5), 5, true},
+		{"none", NewQueue[int](), 0, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := tt.q.Pop()
+			got, ok := tt.q.Pop()
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Pop() got = %v, want %v", got, tt.want)
 			}
-			if got1 != tt.want1 {
-				t.Errorf("Pop() got1 = %v, want %v", got1, tt.want1)
+			if ok != tt.found {
+				t.Errorf("Pop() ok = %v, want %v", ok, tt.found)
 			}
 		})
 	}
@@ -198,21 +217,22 @@ func TestQueue_Pop(t *testing.T) {
 func TestQueue_PopLeft(t *testing.T) {
 	type testCase[T any] struct {
 		name  string
-		q     Queue[T]
+		q     *Queue[T]
 		want  T
-		want1 bool
+		found bool
 	}
 	tests := []testCase[int]{
-		// TODO: Add test cases.
+		{"simple", NewQueue[int](1, 2, 3, 4, 5), 1, true},
+		{"none", NewQueue[int](), 0, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := tt.q.PopLeft()
+			got, ok := tt.q.PopLeft()
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("PopLeft() got = %v, want %v", got, tt.want)
 			}
-			if got1 != tt.want1 {
-				t.Errorf("PopLeft() got1 = %v, want %v", got1, tt.want1)
+			if ok != tt.found {
+				t.Errorf("PopLeft() got1 = %v, want %v", ok, tt.found)
 			}
 		})
 	}
