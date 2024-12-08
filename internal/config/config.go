@@ -11,7 +11,7 @@ type Config struct {
 	SplitFields bool // splits each line by whitespaces (Fields
 	SplitWords  bool
 	SplitSep    string
-	ParseInts   bool
+	GetInts     bool
 }
 
 type ConfigFunc func(cfg *Config)
@@ -22,11 +22,12 @@ func NoLineSplit(cfg *Config) {
 func NoStrip(cfg *Config) {
 	cfg.Strip = false
 }
-func SplitWords(cfg *Config) {
-	cfg.SplitWords = true
+func SplitFields(cfg *Config) {
+	cfg.SplitFields = true
 }
-func ParseInts(cfg *Config) {
-	cfg.ParseInts = true
+
+func GetInts(cfg *Config) {
+	cfg.GetInts = true
 }
 
 func WithDevFile(fileName string) ConfigFunc {
@@ -52,7 +53,7 @@ func NewConfig(day int, dev bool, fn ...ConfigFunc) *Config {
 		SplitFields: false,
 		SplitWords:  false,
 		SplitSep:    "",
-		ParseInts:   false,
+		GetInts:     false,
 	}
 	for _, f := range fn {
 		f(cfg)
