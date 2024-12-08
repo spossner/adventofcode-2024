@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"github.com/spossner/aoc2024/internal/config"
 	"github.com/spossner/aoc2024/internal/puzzle"
+	"github.com/spossner/aoc2024/internal/utils"
 )
 
 const DAY = -1
 
 func createConfig(dev bool) *config.Config {
+	utils.AssertNotEqual(DAY, -1, "did not configure the DAY")
 	return config.NewConfig(DAY, dev)
 }
 
