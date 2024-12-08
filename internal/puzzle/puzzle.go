@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spossner/aoc2024/internal/config"
+	"github.com/spossner/aoc2024/internal/utils"
 	"io"
 	"log"
 	"net/http"
@@ -95,32 +96,40 @@ func NewPuzzle(cfg *config.Config) *Puzzle {
 				cells = append(cells, strings.Split(row, cfg.SplitSep))
 			}
 		}
-
-		if cfg.ParseInts {
-			for i, row := range rows {
-				n, err := strconv.Atoi(row)
-				if err != nil {
-					log.Fatalf("error parsing line %d:  %s -  %v", (i + 1), row, err)
-				}
-				parsedRows = append(parsedRows, n)
-			}
-
-			for i, row := range cells {
-				var parsed []int
-				for j, cell := range row {
-					n, err := strconv.Atoi(cell)
-					if err != nil {
-						log.Fatalf("error parsing %d/%d:  %s -  %v", (i + 1), (j + 1), cell, err)
-					}
-					parsed = append(parsed, n)
-				}
-				parsedCells = append(parsedCells, parsed)
-			}
-		}
 	} else if cfg.SplitFields {
 		rows = strings.Fields(raw)
 	} else if cfg.SplitWords {
 		rows = strings.Split(raw, cfg.SplitSep)
+	}
+
+	if cfg.GetInts {
+		for i, row := range rows {
+			parsed, err := utils.GetInts(row)
+			if err != nil {
+				log.Fatalf("error parsing line %d:  %s -  %v", (i + 1), row, err)
+			}
+			switch len(parsed) {
+			case 0:
+				log.Fatalf("no number found in line %d:  %s", (i + 1), row)
+			case 1:
+				parsedRows = append(parsedRows, parsed[0])
+			default:
+				parsedCells = append(parsedCells, parsed)
+			}
+		}
+
+		for i, row := range cells {
+			var parsed []int
+
+			for j, cell := range row {
+				n, err := strconv.Atoi(cell)
+				if err != nil {
+					log.Fatalf("error parsing %d/%d:  %s -  %v", (i + 1), (j + 1), cell, err)
+				}
+				parsed = append(parsed, n)
+			}
+			parsedCells = append(parsedCells, parsed)
+		}
 	}
 
 	return &Puzzle{
