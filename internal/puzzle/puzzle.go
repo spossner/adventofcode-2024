@@ -30,7 +30,7 @@ func fileNameByDay(cfg *config.Config) string {
 
 func loadPuzzleInput(cfg *config.Config) ([]byte, error) {
 	fileName := fileNameByDay(cfg)
-	fmt.Println(fileName)
+	fmt.Printf("Found local puzzle input %s\n", fileName)
 	return os.ReadFile(fileName)
 }
 
