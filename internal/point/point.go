@@ -1,5 +1,10 @@
 package point
 
+import (
+	"fmt"
+	"iter"
+)
+
 type Point struct {
 	X, Y int
 }
@@ -53,6 +58,10 @@ var (
 	RIGHT = EAST
 )
 
+func (p Point) String() string {
+	return fmt.Sprintf("(%d,%d)", p.X, p.Y)
+}
+
 func (p Point) Translate(dx, dy int) Point {
 	return Point{p.X + dx, p.Y + dy}
 }
@@ -71,4 +80,28 @@ func (p Point) RotateRight() Point {
 
 func (p Point) RotateLeft() Point {
 	return Point{p.Y, -p.X}
+}
+
+func (p Point) DirectAdjacents() iter.Seq2[int, Point] {
+	return func(yield func(int, Point) bool) {
+		i := 0
+		for _, delta := range DIRECT_ADJACENT_POINTS {
+			if !(yield(i, Point{X: p.X + delta.X, Y: p.Y + delta.Y})) {
+				break
+			}
+			i++
+		}
+	}
+}
+
+func (p Point) Adjacents() iter.Seq2[int, Point] {
+	return func(yield func(int, Point) bool) {
+		i := 0
+		for _, delta := range ADJACENT_POINTS {
+			if !(yield(i, Point{X: p.X + delta.X, Y: p.Y + delta.Y})) {
+				break
+			}
+			i++
+		}
+	}
 }
