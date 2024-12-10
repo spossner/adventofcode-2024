@@ -113,6 +113,11 @@ func (q *Queue[T]) Len() int {
 	return q.length
 }
 
+// Empty returns true of the queue is empty; false otherwise
+func (q *Queue[T]) Empty() bool {
+	return q.length == 0
+}
+
 // Peek returns the first item in the queue without removing it.
 func (q *Queue[T]) Peek() any {
 	if q.length == 0 {
