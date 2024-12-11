@@ -88,7 +88,7 @@ func TestQueue_Clear(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.q.Clear()
 			if !reflect.DeepEqual(tt.q, &Queue[byte]{}) {
-				t.Errorf("Clear() does not create Queue zero value: %v", tt.q.List())
+				t.Errorf("Clear() does not create Queue zero Value: %v", tt.q.List())
 			}
 		})
 	}

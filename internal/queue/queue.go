@@ -1,17 +1,18 @@
 package queue
 
 import (
+	"fmt"
 	"iter"
 )
 
 type (
-	node[T any] struct {
-		value          T
-		next, previous *node[T]
+	Node[T any] struct {
+		Value          T
+		next, previous *Node[T]
 	}
 
 	Queue[T any] struct {
-		start, end *node[T]
+		start, end *Node[T]
 		length     int
 	}
 )
@@ -25,7 +26,7 @@ func NewQueue[T any](values ...T) *Queue[T] {
 	return q
 }
 
-// Pop removes and returns an element from the right side of the queue. If no elements are present, Pop returns the zero value with false.
+// Pop removes and returns an element from the right side of the queue. If no elements are present, Pop returns the zero Value with false.
 func (q *Queue[T]) Pop() (T, bool) {
 	var zero T
 	if q.length == 0 {
@@ -40,10 +41,10 @@ func (q *Queue[T]) Pop() (T, bool) {
 		q.end.next = nil
 	}
 	q.length--
-	return n.value, true
+	return n.Value, true
 }
 
-// PopLeft removes and returns an element from the left side of the queue. If no elements are present, PopLeft returns the zero value and false.
+// PopLeft removes and returns an element from the left side of the queue. If no elements are present, PopLeft returns the zero Value and false.
 func (q *Queue[T]) PopLeft() (T, bool) {
 	var zero T
 	if q.length == 0 {
@@ -58,12 +59,12 @@ func (q *Queue[T]) PopLeft() (T, bool) {
 		q.start.previous = nil
 	}
 	q.length--
-	return n.value, true
+	return n.Value, true
 }
 
-// Append adds the value to the right side of the queue.
+// Append adds the Value to the right side of the queue.
 func (q *Queue[T]) Append(value T) {
-	n := &node[T]{value, nil, q.end}
+	n := &Node[T]{value, nil, q.end}
 	if q.length == 0 {
 		q.start = n
 		q.end = n
@@ -74,9 +75,9 @@ func (q *Queue[T]) Append(value T) {
 	q.length++
 }
 
-// AppendLeft adds the value to the left side of the queue.
+// AppendLeft adds the Value to the left side of the queue.
 func (q *Queue[T]) AppendLeft(value T) {
-	n := &node[T]{value, q.start, nil}
+	n := &Node[T]{value, q.start, nil}
 	if q.length == 0 {
 		q.start = n
 		q.end = n
@@ -123,7 +124,34 @@ func (q *Queue[T]) Peek() any {
 	if q.length == 0 {
 		return nil
 	}
-	return q.start.value
+	return q.start.Value
+}
+
+// InsertBefore inserts the given Value before the given node.
+// Note that InsertBefore expects the node to be part of this queue.
+func (q *Queue[T]) InsertBefore(node *Node[T], value T) {
+	n := &Node[T]{value, node, node.previous}
+	if node.previous != nil {
+		node.previous.next = n
+	} else {
+		q.start = n
+	}
+	node.previous = n
+
+	q.length++
+}
+
+// InsertAfter inserts the given Value after the given node.
+// Note that InsertAfter expects the node to be part of this queue.
+func (q *Queue[T]) InsertAfter(node *Node[T], value T) {
+	n := &Node[T]{value, node.next, node}
+	if node.next != nil {
+		node.next.previous = n
+	} else {
+		q.end = n
+	}
+	node.next = n
+	q.length++
 }
 
 func (q *Queue[T]) All() iter.Seq2[int, T] {
@@ -131,7 +159,21 @@ func (q *Queue[T]) All() iter.Seq2[int, T] {
 		el := q.start
 		i := 0
 		for el != nil {
-			if !yield(i, el.value) {
+			if !yield(i, el.Value) {
+				break
+			}
+			el = el.next
+			i++
+		}
+	}
+}
+
+func (q *Queue[T]) AllNodes() iter.Seq2[int, *Node[T]] {
+	return func(yield func(int, *Node[T]) bool) {
+		el := q.start
+		i := 0
+		for el != nil {
+			if !yield(i, el) {
 				break
 			}
 			el = el.next
@@ -146,4 +188,12 @@ func (q *Queue[T]) List() []T {
 		slice[i] = v
 	}
 	return slice
+}
+
+func (q *Queue[T]) String() string {
+	buf := make([]string, q.length)
+	for i, v := range q.All() {
+		buf[i] = fmt.Sprintf("%v", v)
+	}
+	return fmt.Sprintf("%v", buf)
 }
