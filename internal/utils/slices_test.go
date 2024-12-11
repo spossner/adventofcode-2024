@@ -211,3 +211,27 @@ func TestBatched(t *testing.T) {
 		})
 	}
 }
+
+func TestReduce(t *testing.T) {
+	type args[T any, U Number] struct {
+		slice   []T
+		fn      func(U, T) U
+		initial U
+	}
+	type testCase[T any, U Number] struct {
+		name string
+		args args[T, U]
+		want U
+	}
+	tests := []testCase[int, int]{
+		{"sum", args[int, int]{[]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, func(acc, item int) int { return acc + item }, 0}, 55},
+		{"square", args[int, int]{[]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, func(acc, item int) int { return acc + (item * item) }, 0}, 385},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Reduce(tt.args.slice, tt.args.fn, tt.args.initial); got != tt.want {
+				t.Errorf("Reduce() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

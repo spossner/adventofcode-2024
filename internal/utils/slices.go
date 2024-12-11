@@ -54,6 +54,14 @@ func Map[T, U any](slice []T, f func(T) (U, error)) ([]U, error) {
 	return result, nil
 }
 
+func Reduce[T any, U Number](slice []T, fn func(acc U, item T) U, initial U) U {
+	acc := initial
+	for _, item := range slice {
+		acc = fn(acc, item)
+	}
+	return acc
+}
+
 func Any[S ~[]E, E any](s S, f func(E) bool) bool {
 	return slices.ContainsFunc(s, f)
 }
