@@ -60,17 +60,19 @@ func countStones(dp map[int]map[int]int, v int, n int) int {
 }
 
 func solve(cfg *config.Config, isPart2 bool) any {
+	defer utils.Duration(fmt.Sprintf("DAY %d, PART %d", DAY, utils.If(isPart2, 2, 1)))()
+
 	p := puzzle.NewPuzzle(cfg)
 	result := 0
 	if isPart2 {
 		fmt.Println("PART2")
 	}
 
+	dp := make(map[int]map[int]int)
 	n := 25
 	if isPart2 {
 		n = 75
 	}
-	dp := make(map[int]map[int]int)
 	for _, v := range p.ParsedRows {
 		result += countStones(dp, v, n)
 	}
