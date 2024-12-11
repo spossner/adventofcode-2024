@@ -1,9 +1,20 @@
 package utils
 
 import (
-	"log"
+	"golang.org/x/exp/constraints"
 	"strconv"
 )
+
+type Number interface {
+	constraints.Integer | constraints.Float
+}
+
+func Must[T any](value T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return value
+}
 
 func AbsInt(n int) int {
 	if n < 0 {
@@ -13,9 +24,5 @@ func AbsInt(n int) int {
 }
 
 func MustAtoi(s string) int {
-	n, err := strconv.Atoi(s)
-	if err != nil {
-		log.Fatalf("cannot parse %s: %v\n", s, err)
-	}
-	return n
+	return Must(strconv.Atoi(s))
 }
