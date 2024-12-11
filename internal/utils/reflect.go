@@ -41,7 +41,7 @@ func GetPackageDir() int {
 	}
 	packageNumber, err := strconv.Atoi(dir[i+1:])
 	if err != nil {
-		log.Fatalf("error parsing puzzle package - must be the number of the day: %w", err)
+		log.Fatalf("error parsing puzzle package - must be the number of the day: %v", err)
 	}
 	return packageNumber
 }
