@@ -14,24 +14,6 @@ import (
 
 const DAY = 10
 
-type Step struct {
-	pos    point.Point
-	height int
-	seen   set.Set[point.Point]
-}
-
-func NewStep(p point.Point, height int, seen set.Set[point.Point]) *Step {
-	return &Step{
-		p,
-		height,
-		seen,
-	}
-}
-
-func (s *Step) String() string {
-	return fmt.Sprintf("(%d,%d) - %d", s.pos.X, s.pos.Y, s.height)
-}
-
 func createConfig(dev bool) *config.Config {
 	utils.AssertNotEqual(DAY, -1, "did not configure the DAY")
 	return config.NewConfig(DAY, dev,
@@ -46,6 +28,20 @@ func part1(dev bool) any {
 
 func part2(dev bool) any {
 	return solve(createConfig(dev), true)
+}
+
+type Step struct {
+	pos    point.Point
+	height int
+	seen   set.Set[point.Point]
+}
+
+func NewStep(p point.Point, height int, seen set.Set[point.Point]) *Step {
+	return &Step{p, height, seen}
+}
+
+func (s *Step) String() string {
+	return fmt.Sprintf("(%d,%d) - %d", s.pos.X, s.pos.Y, s.height)
 }
 
 func solve(cfg *config.Config, isPart2 bool) any {
