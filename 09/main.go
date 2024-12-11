@@ -10,8 +10,6 @@ import (
 	"strconv"
 )
 
-const DAY = 9
-
 type BlockType int
 
 const (
@@ -47,8 +45,7 @@ func NewBlock(from, to, id int, t BlockType) *Block {
 }
 
 func createConfig(dev bool) *config.Config {
-	utils.AssertNotEqual(DAY, -1, "did not configure the DAY")
-	return config.NewConfig(DAY, dev,
+	return config.NewConfig(utils.GetPackageDir(), dev,
 		config.WithSplitWords(""),
 		config.GetInts,
 		config.NoLineSplit,

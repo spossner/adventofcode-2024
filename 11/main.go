@@ -8,11 +8,8 @@ import (
 	"strconv"
 )
 
-const DAY = 11
-
 func createConfig(dev bool) *config.Config {
-	utils.AssertNotEqual(DAY, -1, "did not configure the DAY")
-	return config.NewConfig(DAY, dev, config.NoLineSplit, config.GetInts)
+	return config.NewConfig(utils.GetPackageDir(), dev, config.NoLineSplit, config.GetInts)
 }
 
 func part1(dev bool) any {
@@ -60,7 +57,7 @@ func countStones(dp map[int]map[int]int, v int, n int) int {
 }
 
 func solve(cfg *config.Config, isPart2 bool) any {
-	defer utils.Duration(fmt.Sprintf("DAY %d, PART %d", DAY, utils.If(isPart2, 2, 1)))()
+	defer utils.Duration(fmt.Sprintf("DAY %d, PART %d", cfg.Day, utils.If(isPart2, 2, 1)))()
 
 	p := puzzle.NewPuzzle(cfg)
 	result := 0

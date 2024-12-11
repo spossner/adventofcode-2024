@@ -10,11 +10,9 @@ import (
 	"github.com/spossner/aoc2024/internal/utils"
 )
 
-const DAY = 8
-
 func createConfig(dev bool) *config.Config {
-	utils.AssertNotEqual(DAY, -1, "did not configure the DAY")
-	return config.NewConfig(DAY, dev, config.WithSplitWords(""))
+	utils.AssertNotEqual(utils.GetPackageDir(), -1, "did not configure the DAY")
+	return config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitWords(""))
 }
 
 func part1(dev bool) any {

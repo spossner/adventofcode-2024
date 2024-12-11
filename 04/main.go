@@ -6,17 +6,16 @@ import (
 	"github.com/spossner/aoc2024/internal/point"
 	"github.com/spossner/aoc2024/internal/puzzle"
 	"github.com/spossner/aoc2024/internal/rectangle"
+	"github.com/spossner/aoc2024/internal/utils"
 )
 
-const DAY = 4
-
 func part1(dev bool) any {
-	cfg := config.NewConfig(DAY, dev, config.WithSplitWords(""), config.WithDevFile("dev2.txt")) // split lines only
+	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitWords(""), config.WithDevFile("dev2.txt")) // split lines only
 	return solve(cfg, false)
 }
 
 func part2(dev bool) any {
-	cfg := config.NewConfig(DAY, dev, config.WithSplitWords(""), config.WithDevFile("dev2.txt")) // split lines only, setting another dev file
+	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitWords(""), config.WithDevFile("dev2.txt")) // split lines only, setting another dev file
 	p := puzzle.NewPuzzle(cfg)
 	result := 0
 

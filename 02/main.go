@@ -7,8 +7,6 @@ import (
 	"github.com/spossner/aoc2024/internal/utils"
 )
 
-const DAY = 2
-
 func part1(dev bool) any {
 	return solve(dev, false)
 }
@@ -18,7 +16,7 @@ func part2(dev bool) any {
 }
 
 func solve(dev bool, isPart2 bool) any {
-	cfg := config.NewConfig(DAY, dev, config.SplitFields, config.GetInts)
+	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.SplitFields, config.GetInts)
 	p := puzzle.NewPuzzle(cfg)
 	result := 0
 

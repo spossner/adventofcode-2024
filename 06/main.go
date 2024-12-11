@@ -10,8 +10,6 @@ import (
 	"github.com/spossner/aoc2024/internal/utils"
 )
 
-const DAY = 6
-
 var DIRECTIONS = map[string]point.Point{
 	"^": point.UP,
 	"v": point.DOWN,
@@ -20,8 +18,7 @@ var DIRECTIONS = map[string]point.Point{
 }
 
 func createConfig(dev bool) *config.Config {
-	fmt.Print(utils.GetFileName())
-	return config.NewConfig(DAY, dev, config.WithSplitWords("")) // split lines only
+	return config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitWords("")) // split lines only
 }
 
 func part1(dev bool) any {

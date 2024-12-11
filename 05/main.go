@@ -10,15 +10,13 @@ import (
 	"strings"
 )
 
-const DAY = 5
-
 func part1(dev bool) any {
-	cfg := config.NewConfig(DAY, dev) // split lines only
+	cfg := config.NewConfig(utils.GetPackageDir(), dev) // split lines only
 	return solve(cfg, false)
 }
 
 func part2(dev bool) any {
-	cfg := config.NewConfig(DAY, dev, config.WithDevFile("dev.txt")) // split lines only, setting another dev file
+	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.WithDevFile("dev.txt")) // split lines only, setting another dev file
 	return solve(cfg, true)
 }
 

@@ -2,16 +2,18 @@ package _1
 
 import (
 	"github.com/spossner/aoc2024/internal/config"
+	"github.com/spossner/aoc2024/internal/counter"
 	"github.com/spossner/aoc2024/internal/puzzle"
 	"github.com/spossner/aoc2024/internal/utils"
 	"slices"
 )
 
-const DAY = 1
+func createConfig(dev bool) *config.Config {
+	return config.NewConfig(utils.GetPackageDir(), dev, config.SplitFields, config.GetInts)
+}
 
 func part1(dev bool) any {
-	cfg := config.NewConfig(DAY, dev, config.SplitFields, config.GetInts)
-	p := puzzle.NewPuzzle(cfg)
+	p := puzzle.NewPuzzle(createConfig(dev))
 	total := 0
 	cols := utils.Transpose(p.ParsedCells)
 	slices.Sort(cols[0])
@@ -23,14 +25,13 @@ func part1(dev bool) any {
 }
 
 func part2(dev bool) any {
-	cfg := config.NewConfig(DAY, dev)
-	p := puzzle.NewPuzzle(cfg)
+	p := puzzle.NewPuzzle(createConfig(dev))
 	cols := utils.Transpose(p.ParsedCells)
 
-	counter := utils.Counter(cols[1])
+	cnt := counter.NewCounter(cols[1])
 	total := 0
 	for _, n := range cols[0] {
-		total += n * counter[n]
+		total += n * cnt[n]
 	}
 	return total
 }

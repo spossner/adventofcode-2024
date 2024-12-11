@@ -9,10 +9,8 @@ import (
 	"strconv"
 )
 
-const DAY = 7
-
 func createConfig(dev bool) *config.Config {
-	return config.NewConfig(DAY, dev, config.GetInts)
+	return config.NewConfig(utils.GetPackageDir(), dev, config.GetInts)
 }
 
 func part1(dev bool) any {

@@ -10,5 +10,5 @@ func Test_part1(t *testing.T) {
 }
 
 func Test_part2(t *testing.T) {
-	fmt.Println(part2(false))
+	fmt.Println(part2(true))
 }

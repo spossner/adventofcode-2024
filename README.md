@@ -6,16 +6,18 @@ Juhhhuuuu - now in GO :-D
 - update `YEAR` in `internal/config/config.go`
 
 ## 3rd party libs
-- none at the moment - aoc helpers included this year
+- `github.com/joho/godotenv`: to parse the .env file
 
 ## New day
 - Clone the `00` blueprint directory for the new day
-- update the `DAY` in `<new-day>/main.go`
+- Note: you must use the day (e.g. 06 for 6th of december) in order to make the automated day detection and input download working
 
 ## Puzzle input
+Puzzle input is automatically fetched when the folder is named like the day and a valid advent of code session cookie is specified in environment as `AOC_SESSION`.
+You can specify the AOC_SESSION in a .env file. Therefore copy the `.env.sample` file into `.env` and
+set your own SESSION cookie. See "Getting a valid AOC_SESSION" below.
 
-Puzzle input is automatically fetched when the valid advent of code session cookie is specified in environment as `AOC_SESSION`.
-Due to the unit test setup and IDE invocation, the environment variable should be set in the calling IDE.
+Or if unit tests are invoked from IDE, the environment variable can also be set in the calling IDE.
 In Goland it's in Settings > Go Modules > Environment
 `AOC_SESSION=12345......fedcba98`
 

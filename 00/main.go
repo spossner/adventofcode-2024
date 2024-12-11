@@ -7,11 +7,8 @@ import (
 	"github.com/spossner/aoc2024/internal/utils"
 )
 
-const DAY = -1
-
 func createConfig(dev bool) *config.Config {
-	utils.AssertNotEqual(DAY, -1, "did not configure the DAY")
-	return config.NewConfig(DAY, dev)
+	return config.NewConfig(utils.GetPackageDir(), dev)
 }
 
 func part1(dev bool) any {
@@ -23,7 +20,7 @@ func part2(dev bool) any {
 }
 
 func solve(cfg *config.Config, isPart2 bool) any {
-	defer utils.Duration(fmt.Sprintf("DAY %d, PART %d", DAY, utils.If(isPart2, 2, 1)))()
+	defer utils.Duration(fmt.Sprintf("DAY %d, PART %d", cfg.Day, utils.If(isPart2, 2, 1)))()
 
 	p := puzzle.NewPuzzle(cfg)
 	result := 0

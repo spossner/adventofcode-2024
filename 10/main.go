@@ -12,11 +12,8 @@ import (
 	"strconv"
 )
 
-const DAY = 10
-
 func createConfig(dev bool) *config.Config {
-	utils.AssertNotEqual(DAY, -1, "did not configure the DAY")
-	return config.NewConfig(DAY, dev,
+	return config.NewConfig(utils.GetPackageDir(), dev,
 		config.WithSplitWords(""),
 		config.WithDevFile("dev5.txt"),
 	)

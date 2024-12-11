@@ -1,5 +1,11 @@
 package config
 
+import (
+	"fmt"
+	"github.com/joho/godotenv"
+	"github.com/spossner/aoc2024/internal/utils"
+)
+
 const YEAR = 2024
 
 type Config struct {
@@ -46,6 +52,13 @@ func WithSplitWords(sep string) ConfigFunc {
 }
 
 func NewConfig(day int, dev bool, fn ...ConfigFunc) *Config {
+	envFile := fmt.Sprintf("%s/.env", utils.GetProjectDir())
+	if err := godotenv.Load(envFile); err != nil {
+		fmt.Printf(".env file not found: %s\n", envFile)
+	} else {
+		fmt.Printf("using .env file: %s\n", envFile)
+	}
+
 	cfg := &Config{
 		Day:         day,
 		Dev:         dev,

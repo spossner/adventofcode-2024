@@ -8,8 +8,6 @@ import (
 	"regexp"
 )
 
-const DAY = 3
-
 func part1(dev bool) any {
 	return solve(dev, false)
 }
@@ -21,7 +19,7 @@ func part2(dev bool) any {
 func solve(dev bool, isPart2 bool) any {
 	if isPart2 {
 	}
-	cfg := config.NewConfig(DAY, dev, config.NoLineSplit)
+	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.NoLineSplit)
 	if isPart2 {
 		cfg.DevFile = "dev-2.txt"
 	}
