@@ -1,5 +1,9 @@
 package set
 
+import (
+	"iter"
+)
+
 type Set[T comparable] map[T]struct{}
 
 func NewSet[T comparable](items ...T) Set[T] {
@@ -16,6 +20,16 @@ func (s Set[T]) Copy() Set[T] {
 		newSet[k] = struct{}{}
 	}
 	return newSet
+}
+
+func (s Set[T]) All() iter.Seq[T] {
+	return func(yield func(value T) bool) {
+		for k := range s {
+			if !yield(k) {
+				break
+			}
+		}
+	}
 }
 
 func FromSlice[T comparable](sets ...[]T) Set[T] {
