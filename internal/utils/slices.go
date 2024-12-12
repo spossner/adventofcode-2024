@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/spossner/aoc2024/internal/point"
 	"iter"
 	"slices"
 )
@@ -28,10 +29,13 @@ func Cut[S ~[]T, T any](slice S, index int) S {
 	return newSlice
 }
 
-func Filter[S ~[]T, T any](slice S, f func(T) (bool, error)) (S, error) {
-	result := make(S, 0)
-	for _, el := range slice {
-		ok, err := f(el)
+func Filter[T any](slice []T, fn func(T) (bool, error)) ([]T, error) {
+	return FilterI(slices.Values(slice), fn)
+}
+func FilterI[T any](iterable iter.Seq[T], fn func(T) (bool, error)) ([]T, error) {
+	result := make([]T, 0)
+	for el := range iterable {
+		ok, err := fn(el)
 		if err != nil {
 			return nil, err
 		}
@@ -42,9 +46,13 @@ func Filter[S ~[]T, T any](slice S, f func(T) (bool, error)) (S, error) {
 	return result, nil
 }
 
-func Map[T, U any](slice []T, f func(T) (U, error)) ([]U, error) {
+func Map[T, U any](slice []T, fn func(T) (U, error)) ([]U, error) {
+	return MapI(slices.Values(slice), fn)
+}
+
+func MapI[T, U any](iterable iter.Seq[T], f func(T) (U, error)) ([]U, error) {
 	result := make([]U, 0)
-	for _, el := range slice {
+	for el := range iterable {
 		elNew, err := f(el)
 		if err != nil {
 			return nil, err
@@ -55,8 +63,12 @@ func Map[T, U any](slice []T, f func(T) (U, error)) ([]U, error) {
 }
 
 func Reduce[T any, U Number](slice []T, fn func(acc U, item T) U, initial U) U {
+	return ReduceI(slices.Values(slice), fn, initial)
+}
+
+func ReduceI[T any, U Number](iterable iter.Seq[T], fn func(acc U, item T) U, initial U) U {
 	acc := initial
-	for _, item := range slice {
+	for item := range iterable {
 		acc = fn(acc, item)
 	}
 	return acc
@@ -76,4 +88,20 @@ func Batched[S ~[]E, E any](s S, n int) iter.Seq2[int, S] {
 			loop++
 		}
 	}
+}
+
+func IterateMatrix[T any](matrix [][]T) iter.Seq2[point.Point, T] {
+	return func(yield func(point.Point, T) bool) {
+		for y, row := range matrix {
+			for x, cell := range row {
+				if (!yield(point.Point{X: x, Y: y}, cell)) {
+					break
+				}
+			}
+		}
+	}
+}
+
+func PickFrom[T any](matrix [][]T, pos point.Point) T {
+	return matrix[pos.Y][pos.X]
 }
