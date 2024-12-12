@@ -52,6 +52,24 @@ var (
 		"W": WEST, "w": WEST, "L": WEST, "l": WEST, "<": WEST,
 	}
 
+	NAMES = map[Point]string{
+		NORTH:      "N",
+		SOUTH:      "S",
+		WEST:       "W",
+		EAST:       "E",
+		NORTH_WEST: "NW",
+		NORTH_EAST: "NE",
+		SOUTH_EAST: "SE",
+		SOUTH_WEST: "SW",
+	}
+
+	ICONS = map[Point]string{
+		NORTH: "^",
+		SOUTH: "v",
+		WEST:  "<",
+		EAST:  ">",
+	}
+
 	UP    = NORTH
 	DOWN  = SOUTH
 	LEFT  = WEST
@@ -60,6 +78,20 @@ var (
 
 func (p Point) String() string {
 	return fmt.Sprintf("(%d,%d)", p.X, p.Y)
+}
+
+func (p Point) Name() string {
+	if name, ok := NAMES[p]; ok {
+		return name
+	}
+	return "UNKNWON"
+}
+
+func (p Point) Icon() string {
+	if name, ok := ICONS[p]; ok {
+		return name
+	}
+	return "?"
 }
 
 func (p Point) Translate(dx, dy int) Point {
@@ -82,26 +114,22 @@ func (p Point) RotateLeft() Point {
 	return Point{p.Y, -p.X}
 }
 
-func (p Point) DirectAdjacents() iter.Seq2[int, Point] {
-	return func(yield func(int, Point) bool) {
-		i := 0
+func (p Point) DirectAdjacents() iter.Seq2[Point, Point] {
+	return func(yield func(Point, Point) bool) {
 		for _, delta := range DIRECT_ADJACENT_POINTS {
-			if !(yield(i, Point{X: p.X + delta.X, Y: p.Y + delta.Y})) {
+			if !(yield(delta, Point{X: p.X + delta.X, Y: p.Y + delta.Y})) {
 				break
 			}
-			i++
 		}
 	}
 }
 
-func (p Point) Adjacents() iter.Seq2[int, Point] {
-	return func(yield func(int, Point) bool) {
-		i := 0
+func (p Point) Adjacents() iter.Seq2[Point, Point] {
+	return func(yield func(Point, Point) bool) {
 		for _, delta := range ADJACENT_POINTS {
-			if !(yield(i, Point{X: p.X + delta.X, Y: p.Y + delta.Y})) {
+			if !(yield(delta, Point{X: p.X + delta.X, Y: p.Y + delta.Y})) {
 				break
 			}
-			i++
 		}
 	}
 }
