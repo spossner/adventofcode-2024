@@ -11,6 +11,7 @@ const YEAR = 2024
 type Config struct {
 	Day         int
 	Dev         bool
+	Debug       bool
 	DevFile     string
 	Strip       bool
 	SplitLines  bool
@@ -51,6 +52,12 @@ func WithSplitWords(sep string) ConfigFunc {
 	}
 }
 
+func WithDebug() ConfigFunc {
+	return func(cfg *Config) {
+		cfg.Debug = true
+	}
+}
+
 func NewConfig(day int, dev bool, fn ...ConfigFunc) *Config {
 	envFile := fmt.Sprintf("%s/.env", utils.GetProjectDir())
 	if err := godotenv.Load(envFile); err != nil {
@@ -62,6 +69,7 @@ func NewConfig(day int, dev bool, fn ...ConfigFunc) *Config {
 	cfg := &Config{
 		Day:         day,
 		Dev:         dev,
+		Debug:       dev,
 		DevFile:     "dev.txt",
 		Strip:       true,
 		SplitLines:  true,
