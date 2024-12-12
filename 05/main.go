@@ -30,9 +30,7 @@ func parseData(p *puzzle.Puzzle) (map[int][]int, [][]int) {
 		if l, ok := mustComeAfter[pair[0]]; ok {
 			mustComeAfter[pair[0]] = append(l, pair[1])
 		} else {
-			l := make([]int, 1)
-			l[0] = pair[1]
-			mustComeAfter[pair[0]] = l
+			mustComeAfter[pair[0]] = []int{pair[1]}
 		}
 	}
 
