@@ -16,6 +16,7 @@ const DEV_FILE = "dev236.txt"
 
 func createConfig(dev bool) *config.Config {
 	return config.NewConfig(utils.GetPackageDir(), dev,
+		config.WithSplitLines(),
 		config.WithSplitWords(""),
 		config.WithDevFile(DEV_FILE),
 		config.WithDebug())

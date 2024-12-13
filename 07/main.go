@@ -10,7 +10,7 @@ import (
 )
 
 func createConfig(dev bool) *config.Config {
-	return config.NewConfig(utils.GetPackageDir(), dev, config.GetInts)
+	return config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitLines(), config.WithGetInts())
 }
 
 func part1(dev bool) any {

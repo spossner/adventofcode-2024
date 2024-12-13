@@ -10,14 +10,21 @@ import (
 	"strings"
 )
 
+const DEV_FILE = "dev.txt"
+
+func createConfig(dev bool) *config.Config {
+	return config.NewConfig(utils.GetPackageDir(), dev,
+		config.WithSplitLines(),
+		config.WithDevFile(DEV_FILE),
+	)
+}
+
 func part1(dev bool) any {
-	cfg := config.NewConfig(utils.GetPackageDir(), dev) // split lines only
-	return solve(cfg, false)
+	return solve(createConfig(dev), false)
 }
 
 func part2(dev bool) any {
-	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.WithDevFile("dev.txt")) // split lines only, setting another dev file
-	return solve(cfg, true)
+	return solve(createConfig(dev), true)
 }
 
 func parseData(p *puzzle.Puzzle) (map[int][]int, [][]int) {

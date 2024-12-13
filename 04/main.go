@@ -9,14 +9,22 @@ import (
 	"github.com/spossner/aoc2024/internal/utils"
 )
 
+const DEV_FILE = "dev2.txt"
+
+func createConfig(dev bool) *config.Config {
+	return config.NewConfig(utils.GetPackageDir(), dev,
+		config.WithSplitLines(),
+		config.WithSplitWords(""),
+		config.WithDevFile(DEV_FILE),
+	)
+}
+
 func part1(dev bool) any {
-	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitWords(""), config.WithDevFile("dev2.txt")) // split lines only
-	return solve(cfg, false)
+	return solve(createConfig(dev), false)
 }
 
 func part2(dev bool) any {
-	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitWords(""), config.WithDevFile("dev2.txt")) // split lines only, setting another dev file
-	p := puzzle.NewPuzzle(cfg)
+	p := puzzle.NewPuzzle(createConfig(dev))
 	result := 0
 
 	bounds := rectangle.NewBounds(p.Cells)

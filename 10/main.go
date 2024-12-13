@@ -14,6 +14,7 @@ import (
 
 func createConfig(dev bool) *config.Config {
 	return config.NewConfig(utils.GetPackageDir(), dev,
+		config.WithSplitLines(),
 		config.WithSplitWords(""),
 		config.WithDevFile("dev5.txt"),
 	)

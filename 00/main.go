@@ -7,8 +7,13 @@ import (
 	"github.com/spossner/aoc2024/internal/utils"
 )
 
+const DEV_FILE = "dev.txt"
+
 func createConfig(dev bool) *config.Config {
-	return config.NewConfig(utils.GetPackageDir(), dev)
+	return config.NewConfig(utils.GetPackageDir(), dev,
+		config.WithSplitLines(),
+		config.WithDevFile(DEV_FILE),
+	)
 }
 
 func part1(dev bool) any {

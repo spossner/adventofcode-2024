@@ -18,7 +18,7 @@ var DIRECTIONS = map[string]point.Point{
 }
 
 func createConfig(dev bool) *config.Config {
-	return config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitWords("")) // split lines only
+	return config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitLines(), config.WithSplitWords(""))
 }
 
 func part1(dev bool) any {

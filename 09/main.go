@@ -47,8 +47,7 @@ func NewBlock(from, to, id int, t BlockType) *Block {
 func createConfig(dev bool) *config.Config {
 	return config.NewConfig(utils.GetPackageDir(), dev,
 		config.WithSplitWords(""),
-		config.GetInts,
-		config.NoLineSplit,
+		config.WithGetInts(),
 		config.WithDevFile("dev.txt"))
 }
 

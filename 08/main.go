@@ -11,8 +11,7 @@ import (
 )
 
 func createConfig(dev bool) *config.Config {
-	utils.AssertNotEqual(utils.GetPackageDir(), -1, "did not configure the DAY")
-	return config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitWords(""))
+	return config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitLines(), config.WithSplitWords(""))
 }
 
 func part1(dev bool) any {

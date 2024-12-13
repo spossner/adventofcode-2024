@@ -19,7 +19,7 @@ func part2(dev bool) any {
 func solve(dev bool, isPart2 bool) any {
 	if isPart2 {
 	}
-	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.NoLineSplit)
+	cfg := config.NewConfig(utils.GetPackageDir(), dev)
 	if isPart2 {
 		cfg.DevFile = "dev-2.txt"
 	}

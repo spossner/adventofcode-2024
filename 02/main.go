@@ -16,7 +16,7 @@ func part2(dev bool) any {
 }
 
 func solve(dev bool, isPart2 bool) any {
-	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.SplitFields, config.GetInts)
+	cfg := config.NewConfig(utils.GetPackageDir(), dev, config.WithSplitLines(), config.WithGetInts())
 	p := puzzle.NewPuzzle(cfg)
 	result := 0
 

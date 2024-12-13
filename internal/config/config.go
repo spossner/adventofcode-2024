@@ -23,20 +23,22 @@ type Config struct {
 
 type ConfigFunc func(cfg *Config)
 
-func NoLineSplit(cfg *Config) {
-	cfg.SplitLines = false
+func WithSplitLines() ConfigFunc {
+	return func(cfg *Config) {
+		cfg.SplitLines = true
+	}
 }
 
-/*func NoStrip(cfg *Config) {
-	cfg.Strip = false
-}*/
-
-func SplitFields(cfg *Config) {
-	cfg.SplitFields = true
+func WithSplitFields() ConfigFunc {
+	return func(cfg *Config) {
+		cfg.SplitFields = true
+	}
 }
 
-func GetInts(cfg *Config) {
-	cfg.GetInts = true
+func WithGetInts() ConfigFunc {
+	return func(cfg *Config) {
+		cfg.GetInts = true
+	}
 }
 
 func WithDevFile(fileName string) ConfigFunc {
@@ -72,7 +74,7 @@ func NewConfig(day int, dev bool, fn ...ConfigFunc) *Config {
 		Debug:       dev,
 		DevFile:     "dev.txt",
 		Strip:       true,
-		SplitLines:  true,
+		SplitLines:  false,
 		SplitFields: false,
 		SplitWords:  false,
 		SplitSep:    "",
