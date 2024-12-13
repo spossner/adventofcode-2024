@@ -51,3 +51,28 @@ func TestMinMax(t *testing.T) {
 		})
 	}
 }
+
+func TestLCM(t *testing.T) {
+	type args struct {
+		a    int
+		b    int
+		nums []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"simple", args{3, 7, nil}, 21},
+		{"larger", args{13, 283, nil}, 3679},
+		{"three", args{12, 15, []int{10}}, 60},
+		{"four", args{35, 48, []int{42, 100}}, 8400},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := LCM(tt.args.a, tt.args.b, tt.args.nums...); got != tt.want {
+				t.Errorf("LCM() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
