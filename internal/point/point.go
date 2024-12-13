@@ -76,6 +76,13 @@ var (
 	RIGHT = EAST
 )
 
+func FromValues(values ...int) Point {
+	if len(values) < 2 {
+		panic("too few values to create a point")
+	}
+	return Point{values[0], values[1]}
+}
+
 func (p Point) String() string {
 	return fmt.Sprintf("(%d,%d)", p.X, p.Y)
 }
