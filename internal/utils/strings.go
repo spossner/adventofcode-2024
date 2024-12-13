@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+func MustAtoi(s string) int {
+	return Must(strconv.Atoi(s))
+}
+
 func GetInts(s string) ([]int, error) {
 	re := regexp.MustCompile(`([-+]?\d+)`)
 	matches := re.FindAllSubmatch([]byte(s), -1)

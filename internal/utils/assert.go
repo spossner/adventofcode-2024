@@ -6,6 +6,13 @@ import (
 	"reflect"
 )
 
+func Must[T any](value T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return value
+}
+
 func AssertTrue(value bool, msgAndArgs ...any) {
 	if !value {
 		log.Fatalln(FormatMsgAndArgs("Expected true but got false", msgAndArgs...))
