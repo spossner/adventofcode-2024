@@ -14,5 +14,5 @@ func Test_part2(t *testing.T) {
 	// 937284 too high
 	// 937284
 
-	//new with checking afterwards: 937032
+	//new with checking borders afterwards: 937032
 }

@@ -120,7 +120,7 @@ func findPlot(p *puzzle.Puzzle, start point.Point, v string, seen set.Set[point.
 		}
 	}
 
-	for side, _ := range borders {
+	for side := range borders {
 		delta := point.WEST
 		if side.direction == point.WEST || side.direction == point.EAST {
 			delta = point.NORTH
