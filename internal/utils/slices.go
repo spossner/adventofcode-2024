@@ -105,3 +105,10 @@ func IterateMatrix[T any](matrix [][]T) iter.Seq2[point.Point, T] {
 func PickFrom[T any](matrix [][]T, pos point.Point) T {
 	return matrix[pos.Y][pos.X]
 }
+
+func Sum[T Number](slice []T) T {
+	var zero T
+	return Reduce(slice, func(acc T, item T) T {
+		return acc + item
+	}, zero)
+}

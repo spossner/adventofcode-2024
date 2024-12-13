@@ -235,3 +235,47 @@ func TestReduce(t *testing.T) {
 		})
 	}
 }
+
+func TestSumInt(t *testing.T) {
+	type args[T Number] struct {
+		slice []T
+	}
+	type testCase[T Number] struct {
+		name string
+		args args[T]
+		want T
+	}
+	tests := []testCase[int]{
+		{"simple", args[int]{[]int{1, 2, 3}}, 6},
+		{"negative", args[int]{[]int{-1, 0, 1}}, 0},
+		{"large", args[int]{[]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}}, 55},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Sum(tt.args.slice); got != tt.want {
+				t.Errorf("Sum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSumFloat(t *testing.T) {
+	type args[T Number] struct {
+		slice []T
+	}
+	type testCase[T Number] struct {
+		name string
+		args args[T]
+		want T
+	}
+	tests := []testCase[float64]{
+		{"simple", args[float64]{[]float64{1.1, 2.2, 3.3}}, 6.6},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Sum(tt.args.slice); got != tt.want {
+				t.Errorf("Sum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
