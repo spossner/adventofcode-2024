@@ -78,3 +78,7 @@ func (r Rectangle) All() iter.Seq2[int, point.Point] {
 		}
 	}
 }
+
+func (r Rectangle) Center() point.Point {
+	return point.Point{r.X + (r.Width >> 1), r.Y + (r.Height >> 1)}
+}
