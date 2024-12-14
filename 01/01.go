@@ -31,7 +31,7 @@ func part2(dev bool) any {
 	p := puzzle.NewPuzzle(createConfig(dev))
 	cols := utils.Transpose(p.ParsedCells)
 
-	cnt := counter.NewCounter(cols[1])
+	cnt := counter.NewCounter(cols[1]...)
 	total := 0
 	for _, n := range cols[0] {
 		total += n * cnt[n]
