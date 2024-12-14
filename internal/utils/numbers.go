@@ -43,3 +43,11 @@ func Bound[T constraints.Ordered](a, low, high T) T {
 	}
 	return a
 }
+
+func Mod(d, m int) int {
+	result := d % m
+	if (result < 0 && m > 0) || (result > 0 && m < 0) {
+		return result + m
+	}
+	return result
+}
