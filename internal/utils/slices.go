@@ -102,8 +102,28 @@ func IterateMatrix[T any](matrix [][]T) iter.Seq2[point.Point, T] {
 	}
 }
 
-func PickFrom[T any](matrix [][]T, pos point.Point) T {
+func PickFromMatrix[T any](matrix [][]T, pos point.Point) T {
 	return matrix[pos.Y][pos.X]
+}
+
+func PickFirst[T any](slice []T) T {
+	return slice[0]
+}
+
+func PickLast[T any](slice []T) T {
+	return slice[len(slice)-1]
+}
+
+func Pick2From[T any](slice []T) (T, T) {
+	return slice[0], slice[1]
+}
+
+func Pick3From[T any](slice []T) (T, T, T) {
+	return slice[0], slice[1], slice[2]
+}
+
+func Pick4From[T any](slice []T) (T, T, T, T) {
+	return slice[0], slice[1], slice[2], slice[3]
 }
 
 func Sum[T Number](slice []T) T {
@@ -111,4 +131,13 @@ func Sum[T Number](slice []T) T {
 	return Reduce(slice, func(acc T, item T) T {
 		return acc + item
 	}, zero)
+}
+
+func Product[T Number](slice []T) T {
+	var one T
+	one++
+
+	return Reduce(slice, func(acc T, item T) T {
+		return acc * item
+	}, one)
 }
