@@ -3,10 +3,10 @@ package _0
 import (
 	"fmt"
 	"github.com/spossner/aoc2024/internal/config"
+	"github.com/spossner/aoc2024/internal/grid"
 	"github.com/spossner/aoc2024/internal/point"
 	"github.com/spossner/aoc2024/internal/puzzle"
 	"github.com/spossner/aoc2024/internal/queue"
-	"github.com/spossner/aoc2024/internal/rectangle"
 	"github.com/spossner/aoc2024/internal/set"
 	"github.com/spossner/aoc2024/internal/utils"
 	"strconv"
@@ -68,7 +68,7 @@ func solve(cfg *config.Config, isPart2 bool) any {
 		}
 	}
 
-	bounds := rectangle.NewBounds(p.Cells)
+	bounds := grid.GetBounds(p.Cells)
 
 	dp := make([][]int, len(p.Cells))
 	for i := range len(p.Cells) {

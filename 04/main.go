@@ -3,6 +3,7 @@ package _0
 import (
 	"fmt"
 	"github.com/spossner/aoc2024/internal/config"
+	"github.com/spossner/aoc2024/internal/grid"
 	"github.com/spossner/aoc2024/internal/point"
 	"github.com/spossner/aoc2024/internal/puzzle"
 	"github.com/spossner/aoc2024/internal/rectangle"
@@ -27,7 +28,7 @@ func part2(dev bool) any {
 	p := puzzle.NewPuzzle(createConfig(dev))
 	result := 0
 
-	bounds := rectangle.NewBounds(p.Cells)
+	bounds := grid.GetBounds(p.Cells)
 
 	for y, row := range p.Cells {
 		if y == 0 || y == bounds.Height-1 {

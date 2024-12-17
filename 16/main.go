@@ -4,10 +4,10 @@ import (
 	"container/heap"
 	"fmt"
 	"github.com/spossner/aoc2024/internal/config"
+	"github.com/spossner/aoc2024/internal/grid"
 	"github.com/spossner/aoc2024/internal/pair"
 	"github.com/spossner/aoc2024/internal/point"
 	"github.com/spossner/aoc2024/internal/puzzle"
-	"github.com/spossner/aoc2024/internal/rectangle"
 	"github.com/spossner/aoc2024/internal/set"
 	"github.com/spossner/aoc2024/internal/utils"
 	"math"
@@ -32,16 +32,6 @@ func part2(dev bool) any {
 	return solve(createConfig(dev), true)
 }
 
-func findPositions(grid [][]string, marker ...string) map[string]point.Point {
-	positions := make(map[string]point.Point)
-	for pos, value := range utils.IterateMatrix(grid) {
-		if slices.Contains(marker, value) {
-			positions[value] = pos
-		}
-	}
-	return positions
-}
-
 func solve(cfg *config.Config, isPart2 bool) any {
 	defer utils.Duration(fmt.Sprintf("DAY %d, PART %d", cfg.Day, utils.If(isPart2, 2, 1)))()
 
@@ -50,8 +40,9 @@ func solve(cfg *config.Config, isPart2 bool) any {
 		fmt.Println("PART2")
 	}
 
-	pos := findPositions(p.Cells, "S", "E")
-	solutions, costs := dijkstra(p.Cells, pos["S"], point.EAST, pos["E"])
+	start, _ := grid.FindMarker(p.Cells, "S")
+	end, _ := grid.FindMarker(p.Cells, "E")
+	solutions, costs := dijkstra(p.Cells, start, point.EAST, end)
 
 	markers := set.NewSet[point.Point]()
 	for _, solution := range solutions {
@@ -59,21 +50,9 @@ func solve(cfg *config.Config, isPart2 bool) any {
 			markers.Add(el.location)
 		}
 	}
-	//dumpGrid(p.Cells, markers)
+	//grid.DumpGridWithMarker(p.Cells, markers)
 
 	return pair.NewIntPair(costs, len(markers))
-}
-
-func dumpGrid(cells [][]string, markers set.Set[point.Point]) {
-	for y, row := range cells {
-		for x, cell := range row {
-			if markers.Contains(point.Point{x, y}) {
-				cell = "0"
-			}
-			fmt.Print(cell)
-		}
-		fmt.Println()
-	}
 }
 
 type Pos struct {
@@ -134,14 +113,14 @@ func (pq *PriorityQueue) Pop() any {
 	return item
 }
 
-func dijkstra(grid [][]string, start, direction, end point.Point) ([][]Pos, int) {
-	bounds := rectangle.NewBounds(grid)
+func dijkstra(field [][]string, start, direction, end point.Point) ([][]Pos, int) {
+	bounds := grid.GetBounds(field)
 	distances := make(map[Pos]int)
 	solutions := make([][]Pos, 0)
 	costsSoFar := math.MaxInt
 
 	q := make(PriorityQueue, 0)
-	q.Push(NewItem(start, direction, []Pos{Pos{start, direction}}, 0))
+	q.Push(NewItem(start, direction, []Pos{{start, direction}}, 0))
 	heap.Init(&q)
 	for q.Len() > 0 {
 		item := heap.Pop(&q).(*Item)
@@ -173,13 +152,13 @@ func dijkstra(grid [][]string, start, direction, end point.Point) ([][]Pos, int)
 				continue
 			}
 
-			// do not leave grid
+			// do not leave field
 			if !bounds.Contains(adj) {
 				continue
 			}
 
 			// do not go into walls
-			if grid[adj.Y][adj.X] == "#" {
+			if field[adj.Y][adj.X] == "#" {
 				continue
 			}
 

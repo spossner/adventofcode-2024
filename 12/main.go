@@ -3,10 +3,10 @@ package _0
 import (
 	"fmt"
 	"github.com/spossner/aoc2024/internal/config"
+	"github.com/spossner/aoc2024/internal/grid"
 	"github.com/spossner/aoc2024/internal/point"
 	"github.com/spossner/aoc2024/internal/puzzle"
 	"github.com/spossner/aoc2024/internal/queue"
-	"github.com/spossner/aoc2024/internal/rectangle"
 	"github.com/spossner/aoc2024/internal/set"
 	"github.com/spossner/aoc2024/internal/utils"
 	"slices"
@@ -56,7 +56,7 @@ func solve(cfg *config.Config, isPart2 bool) any {
 
 	areas := []Plot{}
 	seen := set.NewSet[point.Point]()
-	for pos, v := range utils.IterateMatrix(p.Cells) {
+	for pos, v := range grid.IterateGrid(p.Cells) {
 		if seen.Contains(pos) {
 			continue
 		}
@@ -98,7 +98,7 @@ func findPlot(p *puzzle.Puzzle, start point.Point, v string, seen set.Set[point.
 	area := 0
 	sides := set.NewSet[Side]()
 	borders := map[Side]struct{}{}
-	bounds := rectangle.NewBounds(p.Cells)
+	bounds := grid.GetBounds(p.Cells)
 	for !q.Empty() {
 		pos, ok := q.PopLeft()
 		if !ok {

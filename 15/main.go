@@ -3,6 +3,7 @@ package _0
 import (
 	"fmt"
 	"github.com/spossner/aoc2024/internal/config"
+	"github.com/spossner/aoc2024/internal/grid"
 	"github.com/spossner/aoc2024/internal/point"
 	"github.com/spossner/aoc2024/internal/puzzle"
 	"github.com/spossner/aoc2024/internal/utils"
@@ -27,7 +28,7 @@ func part2(dev bool) any {
 }
 
 func findRobot(area [][]string) point.Point {
-	for pos, value := range utils.IterateMatrix(area) {
+	for pos, value := range grid.IterateGrid(area) {
 		if value == "@" {
 			return pos
 		}
@@ -37,7 +38,7 @@ func findRobot(area [][]string) point.Point {
 
 func move(area [][]string, start, direction point.Point) bool {
 	adj := start.Add(direction)
-	v := utils.PickFromMatrix(area, adj)
+	v := grid.PickFrom(area, adj)
 	if v == "#" {
 		return false // can not move in that direction
 	}
@@ -53,12 +54,12 @@ func move(area [][]string, start, direction point.Point) bool {
 }
 
 func move2(area [][]string, start, direction point.Point, justCheck bool) bool {
-	if utils.PickFromMatrix(area, start) == "#" { // check starting at wall
+	if grid.PickFrom(area, start) == "#" { // check starting at wall
 		return false
 	}
 
 	adj := start.Add(direction)
-	v := utils.PickFromMatrix(area, adj)
+	v := grid.PickFrom(area, adj)
 	if v == "#" {
 		return false // can not move in that direction
 	}
@@ -97,7 +98,7 @@ func move2(area [][]string, start, direction point.Point, justCheck bool) bool {
 
 func countGPS(area [][]string) int {
 	result := 0
-	for pos, v := range utils.IterateMatrix(area) {
+	for pos, v := range grid.IterateGrid(area) {
 		if v == "O" || v == "[" {
 			result += pos.Y*100 + pos.X
 		}
@@ -105,12 +106,12 @@ func countGPS(area [][]string) int {
 	return result
 }
 
-func dumpGrid(area [][]string) {
-	for _, row := range area {
-		fmt.Println(strings.Join(row, ""))
-	}
-	fmt.Println()
-}
+//func dumpGrid(area [][]string) {
+//	for _, row := range area {
+//		fmt.Println(strings.Join(row, ""))
+//	}
+//	fmt.Println()
+//}
 
 func solve(cfg *config.Config, isPart2 bool) any {
 	defer utils.Duration(fmt.Sprintf("DAY %d, PART %d", cfg.Day, utils.If(isPart2, 2, 1)))()

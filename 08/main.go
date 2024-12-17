@@ -3,9 +3,9 @@ package _0
 import (
 	"fmt"
 	"github.com/spossner/aoc2024/internal/config"
+	"github.com/spossner/aoc2024/internal/grid"
 	"github.com/spossner/aoc2024/internal/point"
 	"github.com/spossner/aoc2024/internal/puzzle"
-	"github.com/spossner/aoc2024/internal/rectangle"
 	"github.com/spossner/aoc2024/internal/set"
 	"github.com/spossner/aoc2024/internal/utils"
 )
@@ -42,7 +42,7 @@ func solve(cfg *config.Config, isPart2 bool) any {
 			points[c] = append(coords, point.Point{X: x, Y: y})
 		}
 	}
-	bounds := rectangle.NewBounds(p.Cells)
+	bounds := grid.GetBounds(p.Cells)
 	antinodes := set.NewSet[point.Point]()
 	for _, adj := range points {
 		if len(adj) < 2 {
