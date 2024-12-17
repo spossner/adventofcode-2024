@@ -83,6 +83,10 @@ func FromValues(values ...int) Point {
 	return Point{values[0], values[1]}
 }
 
+func FromDirection(direction string) Point {
+	return DIRECTIONS[direction]
+}
+
 func (p Point) String() string {
 	return fmt.Sprintf("(%d,%d)", p.X, p.Y)
 }
@@ -121,6 +125,8 @@ func (p Point) RotateLeft() Point {
 	return Point{p.Y, -p.X}
 }
 
+// DirectAdjacents gives a range func through the direct adjacents points.
+// It yields the direction as first value and the position of the adjacent as Point as second value.
 func (p Point) DirectAdjacents() iter.Seq2[Point, Point] {
 	return func(yield func(Point, Point) bool) {
 		for _, delta := range DIRECT_ADJACENT_POINTS {
