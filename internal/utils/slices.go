@@ -92,10 +92,11 @@ func Batched[S ~[]E, E any](s S, n int) iter.Seq2[int, S] {
 
 func IterateMatrix[T any](matrix [][]T) iter.Seq2[point.Point, T] {
 	return func(yield func(point.Point, T) bool) {
+	Outer:
 		for y, row := range matrix {
 			for x, cell := range row {
 				if (!yield(point.Point{X: x, Y: y}, cell)) {
-					break
+					break Outer
 				}
 			}
 		}
