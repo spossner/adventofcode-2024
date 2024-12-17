@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"github.com/spossner/aoc2024/internal/point"
 	"iter"
 	"slices"
 )
@@ -88,23 +87,6 @@ func Batched[S ~[]E, E any](s S, n int) iter.Seq2[int, S] {
 			loop++
 		}
 	}
-}
-
-func IterateMatrix[T any](matrix [][]T) iter.Seq2[point.Point, T] {
-	return func(yield func(point.Point, T) bool) {
-	Outer:
-		for y, row := range matrix {
-			for x, cell := range row {
-				if (!yield(point.Point{X: x, Y: y}, cell)) {
-					break Outer
-				}
-			}
-		}
-	}
-}
-
-func PickFromMatrix[T any](matrix [][]T, pos point.Point) T {
-	return matrix[pos.Y][pos.X]
 }
 
 func PickFirst[T any](slice []T) T {

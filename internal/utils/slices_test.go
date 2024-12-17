@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/spossner/aoc2024/internal/grid"
 	"github.com/spossner/aoc2024/internal/point"
 	"reflect"
 	"strconv"
@@ -296,7 +297,7 @@ func TestPickFrom(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := PickFrom(tt.args.matrix, tt.args.pos); !reflect.DeepEqual(got, tt.want) {
+			if got := grid.PickFrom(tt.args.matrix, tt.args.pos); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("PickFrom() = %v, want %v", got, tt.want)
 			}
 		})
