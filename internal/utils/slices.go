@@ -93,6 +93,10 @@ func PickFirst[T any](slice []T) T {
 	return slice[0]
 }
 
+func PickSecond[T any](slice []T) T {
+	return slice[1] // panics if there is no second element
+}
+
 func PickLast[T any](slice []T) T {
 	return slice[len(slice)-1]
 }
