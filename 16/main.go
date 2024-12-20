@@ -40,8 +40,9 @@ func solve(cfg *config.Config, isPart2 bool) any {
 		fmt.Println("PART2")
 	}
 
-	start, _ := grid.FindMarker(p.Cells, "S")
-	end, _ := grid.FindMarker(p.Cells, "E")
+	g := grid.AsGrid(p.Cells)
+	start, _ := g.FindMarker("S")
+	end, _ := g.FindMarker("E")
 	solutions, costs := dijkstra(p.Cells, start, point.EAST, end)
 
 	markers := set.NewSet[point.Point]()
