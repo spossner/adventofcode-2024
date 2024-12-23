@@ -14,7 +14,7 @@ func NewSet[T comparable](items ...T) Set[T] {
 	return set
 }
 
-func (s Set[T]) Copy() Set[T] {
+func (s Set[T]) Clone() Set[T] {
 	newSet := make(Set[T])
 	for k := range s {
 		newSet[k] = struct{}{}
@@ -101,5 +101,11 @@ func (s Set[T]) Add(items ...T) {
 func (s Set[T]) Remove(items ...T) {
 	for _, item := range items {
 		delete(s, item)
+	}
+}
+
+func (s Set[T]) Extend(items iter.Seq[T]) {
+	for item := range items {
+		s[item] = struct{}{}
 	}
 }
