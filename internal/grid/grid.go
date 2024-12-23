@@ -104,6 +104,42 @@ func (g Grid) Set(x, y int, value string) {
 	g.data[y][x] = value
 }
 
+func (g Grid) Bfs(start, end point.Point) []point.Point {
+	root := point.Point{-1, -1}
+	q := queue.NewQueue[point.Point](start)
+	parents := make(map[point.Point]point.Point)
+	parents[start] = root
+	for !q.Empty() {
+		item, _ := q.PopLeft()
+		if item == end {
+			var route []point.Point
+			var ok bool
+			for {
+				route = append(route, item)
+				item, ok = parents[item]
+				if !ok || item == root {
+					slices.Reverse(route)
+					return route
+				}
+			}
+		}
+		for _, adj := range item.DirectAdjacents() {
+			if !g.Contains(adj) {
+				continue
+			}
+			if utils.Contains(parents, adj) {
+				continue
+			}
+			if g.Get(adj.X, adj.Y) == g.Wall() {
+				continue
+			}
+			parents[adj] = item
+			q.Append(adj)
+		}
+	}
+	return nil
+}
+
 func (g Grid) Dijkstra(start, end point.Point) (int, []point.Point) {
 	distances := make(map[point.Point]int)
 	previous := make(map[point.Point]point.Point)
