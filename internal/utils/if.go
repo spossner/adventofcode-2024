@@ -2,7 +2,14 @@ package utils
 
 import "reflect"
 
-func If(cond bool, a, b any) any {
+func If[T any](cond bool, a, b T) T {
+	if cond {
+		return a
+	}
+	return b
+}
+
+func Iff(cond bool, a, b any) any {
 	if cond {
 		if reflect.TypeOf(a).Kind() == reflect.Func {
 			return a.(func() any)()
