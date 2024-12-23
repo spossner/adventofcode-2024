@@ -5,7 +5,7 @@ type Counter[T comparable] map[T]int
 func NewCounter[T comparable](items ...T) Counter[T] {
 	cnt := make(Counter[T])
 	for _, item := range items {
-		cnt.Add(item)
+		cnt[item]++
 	}
 	return cnt
 }
