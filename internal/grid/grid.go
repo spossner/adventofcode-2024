@@ -1,12 +1,12 @@
 package grid
 
 import (
-	"container/heap"
 	"fmt"
 	"github.com/spossner/aoc2024/internal/point"
 	"github.com/spossner/aoc2024/internal/queue"
 	"github.com/spossner/aoc2024/internal/rectangle"
 	"github.com/spossner/aoc2024/internal/set"
+	"github.com/spossner/aoc2024/internal/utils"
 	"iter"
 	"slices"
 )
@@ -62,13 +62,17 @@ func (g Grid) All() iter.Seq2[point.Point, string] {
 }
 
 func (g Grid) Dump() {
-	g.DumpWithMarker(set.NewSet[point.Point]())
+	g.DumpWithMarker(nil)
+}
+
+func (g Grid) DumpPath(path []point.Point) {
+	g.DumpWithMarker(set.FromSlice(path))
 }
 
 func (g Grid) DumpWithMarker(markers set.Set[point.Point]) {
 	for y, row := range g.data {
 		for x, cell := range row {
-			if markers.Contains(point.Point{x, y}) {
+			if markers != nil && markers.Contains(point.Point{x, y}) {
 				fmt.Print(g.cfg.marker)
 			} else {
 				fmt.Print(cell)
@@ -82,6 +86,20 @@ func (g Grid) Bounds() rectangle.Rectangle {
 	return GetBounds(g.data)
 }
 
+func (g Grid) Contains(p point.Point) bool {
+	if len(g.data) == 0 {
+		return false
+	}
+	if p.X >= 0 && p.Y >= 0 && p.X < len(g.data[0]) && p.Y < len(g.data) {
+		return true
+	}
+	return false
+}
+
+func (g Grid) Get(x, y int) string {
+	return g.data[y][x]
+}
+
 func (g Grid) Set(x, y int, value string) {
 	g.data[y][x] = value
 }
@@ -92,48 +110,47 @@ func (g Grid) Dijkstra(start, end point.Point) (int, []point.Point) {
 	visited := set.NewSet[point.Point]()
 	bounds := g.Bounds()
 
-	q := make(queue.PriorityQueue, 0)
-	q.Push(queue.NewItem(start, 0))
-	heap.Init(&q)
+	q := queue.NewPQ[point.Point]()
+	q.Push(0, start)
 
 	for !q.Empty() {
-		item := heap.Pop(&q).(*queue.Item)
-		if item.Pos == end {
-			return distances[item.Pos], buildPath(item.Pos, previous)
+		item := q.Pop()
+		if item == end {
+			return distances[item], buildPath(item, previous)
 		}
-		if visited.Contains(item.Pos) {
+		if visited.Contains(item) {
 			continue
 		}
-		visited.Add(item.Pos)
+		visited.Add(item)
 
-		for _, adj := range item.Pos.DirectAdjacents() {
+		for _, adj := range item.DirectAdjacents() {
 			if !bounds.Contains(adj) || visited.Contains(adj) {
 				continue
 			}
 
-			if g.data[adj.Y][adj.X] == g.wall() {
+			if g.data[adj.Y][adj.X] == g.Wall() {
 				continue
 			}
-			costs := distances[item.Pos] + 1
+			costs := distances[item] + 1
 			if v, ok := distances[adj]; ok && costs >= v {
 				continue
 			}
 			distances[adj] = costs
-			previous[adj] = item.Pos
-			heap.Push(&q, queue.NewItem(adj, costs))
+			previous[adj] = item
+			q.Push(costs, adj)
 		}
 	}
 	return 0, nil
 }
 
-func (g Grid) wall() string {
+func (g Grid) Wall() string {
 	if g.cfg != nil {
 		return g.cfg.wall
 	}
 	return "#"
 }
 
-func (g Grid) marker() string {
+func (g Grid) Marker() string {
 	if g.cfg != nil {
 		return g.cfg.marker
 	}
