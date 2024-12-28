@@ -31,6 +31,11 @@ func Cut[S ~[]T, T any](slice S, index int) S {
 func Filter[T any](slice []T, fn func(T) (bool, error)) ([]T, error) {
 	return FilterI(slices.Values(slice), fn)
 }
+
+func MustFilter[T any](slice []T, fn func(T) (bool, error)) []T {
+	return Must(Filter(slice, fn))
+}
+
 func FilterI[T any](iterable iter.Seq[T], fn func(T) (bool, error)) ([]T, error) {
 	result := make([]T, 0)
 	for el := range iterable {
@@ -47,6 +52,10 @@ func FilterI[T any](iterable iter.Seq[T], fn func(T) (bool, error)) ([]T, error)
 
 func Map[T, U any](slice []T, fn func(T) (U, error)) ([]U, error) {
 	return MapI(slices.Values(slice), fn)
+}
+
+func MustMap[T, U any](slice []T, fn func(T) (U, error)) []U {
+	return Must(Map(slice, fn))
 }
 
 func MapI[T, U any](iterable iter.Seq[T], f func(T) (U, error)) ([]U, error) {
