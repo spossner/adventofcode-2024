@@ -3,6 +3,7 @@ package grid
 import (
 	"fmt"
 	"github.com/spossner/aoc2024/internal/point"
+	"github.com/spossner/aoc2024/internal/utils"
 	"reflect"
 	"strings"
 	"testing"
@@ -21,6 +22,7 @@ func Test_buildPath(t *testing.T) {
 		{"simple", args{p: point.Point{2, 2}, previous: map[point.Point]point.Point{
 			{2, 2}: {1, 1},
 			{1, 1}: {0, 0},
+			{0, 0}: {-1, -1},
 		}}, []point.Point{{0, 0}, {1, 1}, {2, 2}}},
 	}
 	for _, tt := range tests {
@@ -66,6 +68,76 @@ func TestGrid_Dijkstra(t *testing.T) {
 			//if !reflect.DeepEqual(got1, tt.want1) {
 			//	t.Errorf("Dijkstra() got1 = %v, want %v", got1, tt.want1)
 			//}
+		})
+	}
+}
+
+func TestGrid_BfsAll(t *testing.T) {
+	type args struct {
+		start point.Point
+		end   point.Point
+	}
+	tests := []struct {
+		name string
+		grid [][]string
+		args args
+		want [][]point.Point
+	}{
+		{"simple", utils.Must(utils.Map[string, []string]([]string{"789", "456", "123", "#0A"}, func(t string) ([]string, error) {
+			return strings.Split(t, ""), nil
+		})), args{point.Point{2, 3}, point.Point{0, 0}}, [][]point.Point{
+			[]point.Point{{2, 3}, {2, 2}, {2, 1}, {2, 0}, {1, 0}, {0, 0}},
+			[]point.Point{{2, 3}, {2, 2}, {2, 1}, {1, 1}, {1, 0}, {0, 0}},
+			[]point.Point{{2, 3}, {2, 2}, {1, 2}, {1, 1}, {1, 0}, {0, 0}},
+			[]point.Point{{2, 3}, {1, 3}, {1, 2}, {1, 1}, {1, 0}, {0, 0}},
+			[]point.Point{{2, 3}, {2, 2}, {2, 1}, {1, 1}, {0, 1}, {0, 0}},
+			[]point.Point{{2, 3}, {2, 2}, {1, 2}, {1, 1}, {0, 1}, {0, 0}},
+			[]point.Point{{2, 3}, {1, 3}, {1, 2}, {1, 1}, {0, 1}, {0, 0}},
+			[]point.Point{{2, 3}, {2, 2}, {1, 2}, {0, 2}, {0, 1}, {0, 0}},
+			[]point.Point{{2, 3}, {1, 3}, {1, 2}, {0, 2}, {0, 1}, {0, 0}},
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			g := AsGrid(tt.grid)
+			if got := g.BfsAll(tt.args.start, tt.args.end); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BfsAll() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGrid_BfsAllDirections(t *testing.T) {
+	type args struct {
+		start point.Point
+		end   point.Point
+	}
+	tests := []struct {
+		name string
+		grid [][]string
+		args args
+		want [][]point.Point
+	}{
+		{"simple", utils.Must(utils.Map[string, []string]([]string{"789", "456", "123", "#0A"}, func(t string) ([]string, error) {
+			return strings.Split(t, ""), nil
+		})), args{point.Point{2, 3}, point.Point{0, 0}}, [][]point.Point{
+			[]point.Point{{0, -1}, {0, -1}, {0, -1}, {-1, 0}, {-1, 0}},
+			[]point.Point{{0, -1}, {0, -1}, {-1, 0}, {0, -1}, {-1, 0}},
+			[]point.Point{{0, -1}, {-1, 0}, {0, -1}, {0, -1}, {-1, 0}},
+			[]point.Point{{-1, 0}, {0, -1}, {0, -1}, {0, -1}, {-1, 0}},
+			[]point.Point{{0, -1}, {0, -1}, {-1, 0}, {-1, 0}, {0, -1}},
+			[]point.Point{{0, -1}, {-1, 0}, {0, -1}, {-1, 0}, {0, -1}},
+			[]point.Point{{-1, 0}, {0, -1}, {0, -1}, {-1, 0}, {0, -1}},
+			[]point.Point{{0, -1}, {-1, 0}, {-1, 0}, {0, -1}, {0, -1}},
+			[]point.Point{{-1, 0}, {0, -1}, {-1, 0}, {0, -1}, {0, -1}},
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			g := AsGrid(tt.grid)
+			if got := g.BfsAll(tt.args.start, tt.args.end, WithDirections()); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BfsAllDirections() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

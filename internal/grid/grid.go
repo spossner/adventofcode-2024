@@ -8,7 +8,7 @@ import (
 	"github.com/spossner/aoc2024/internal/set"
 	"github.com/spossner/aoc2024/internal/utils"
 	"iter"
-	"slices"
+	"strings"
 )
 
 type GridConfig struct {
@@ -28,6 +28,28 @@ func NewGridConfig(options ...GridConfigFunc) *GridConfig {
 type Grid struct {
 	cfg  *GridConfig
 	data [][]string
+}
+
+type Path []point.Point
+
+func (p Path) String() string {
+	return strings.Join(utils.MustMap[point.Point, string](p, func(p point.Point) (string, error) {
+		return p.Icon(), nil
+	}), "")
+}
+
+var root = point.Point{-1, -1}
+
+type BfsOptions struct {
+	directions bool
+}
+type BfsOptionFunc func(cfg *BfsOptions) *BfsOptions
+
+func WithDirections() BfsOptionFunc {
+	return func(cfg *BfsOptions) *BfsOptions {
+		cfg.directions = true
+		return cfg
+	}
 }
 
 func NewGrid(width, height int, options ...GridConfigFunc) Grid {
@@ -104,36 +126,64 @@ func (g Grid) Set(x, y int, value string) {
 	g.data[y][x] = value
 }
 
-func (g Grid) Bfs(start, end point.Point) []point.Point {
-	root := point.Point{-1, -1}
+func (g Grid) BfsAll(start, end point.Point, options ...BfsOptionFunc) []Path {
+	cfg := &BfsOptions{}
+	for _, fn := range options {
+		cfg = fn(cfg)
+	}
 	q := queue.NewQueue[point.Point](start)
-	parents := make(map[point.Point]point.Point)
-	parents[start] = root
+	previous := make(map[point.Point][]point.Point)
+	previous[start] = nil
+	distances := make(map[point.Point]int)
+	distances[start] = 0
+	for distance := 1; !q.Empty(); distance++ {
+		for range q.Len() { // do one step after the other
+			item, _ := q.PopLeft()
+			if item == end {
+				return buildMultiPath(item, previous, cfg.directions)
+			}
+			for _, adj := range item.DirectAdjacents() {
+				if !g.Contains(adj) {
+					continue
+				}
+				if g.Get(adj.X, adj.Y) == g.Wall() {
+					continue
+				}
+				d, ok := distances[adj]
+				if ok && d < distance {
+					continue // already seen earlier
+				}
+				distances[adj] = distance
+				previous[adj] = append(previous[adj], item)
+				if len(previous[adj]) == 1 {
+					q.Append(adj) // first visitor
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (g Grid) Bfs(start, end point.Point) Path {
+	q := queue.NewQueue[point.Point](start)
+	previous := make(map[point.Point]point.Point)
+	previous[start] = root
 	for !q.Empty() {
 		item, _ := q.PopLeft()
 		if item == end {
-			var route []point.Point
-			var ok bool
-			for {
-				route = append(route, item)
-				item, ok = parents[item]
-				if !ok || item == root {
-					slices.Reverse(route)
-					return route
-				}
-			}
+			return buildPath(item, previous)
 		}
 		for _, adj := range item.DirectAdjacents() {
 			if !g.Contains(adj) {
 				continue
 			}
-			if utils.Contains(parents, adj) {
-				continue
-			}
 			if g.Get(adj.X, adj.Y) == g.Wall() {
 				continue
 			}
-			parents[adj] = item
+			if utils.Contains(previous, adj) {
+				continue
+			}
+			previous[adj] = item
 			q.Append(adj)
 		}
 	}
@@ -143,8 +193,7 @@ func (g Grid) Bfs(start, end point.Point) []point.Point {
 func (g Grid) Dijkstra(start, end point.Point) (int, []point.Point) {
 	distances := make(map[point.Point]int)
 	previous := make(map[point.Point]point.Point)
-	visited := set.NewSet[point.Point]()
-	bounds := g.Bounds()
+	previous[start] = root
 
 	q := queue.NewPQ[point.Point]()
 	q.Push(0, start)
@@ -154,13 +203,13 @@ func (g Grid) Dijkstra(start, end point.Point) (int, []point.Point) {
 		if item == end {
 			return distances[item], buildPath(item, previous)
 		}
-		if visited.Contains(item) {
-			continue
-		}
-		visited.Add(item)
 
 		for _, adj := range item.DirectAdjacents() {
-			if !bounds.Contains(adj) || visited.Contains(adj) {
+			if !g.Contains(adj) {
+				continue
+			}
+
+			if utils.Contains(previous, adj) {
 				continue
 			}
 
@@ -191,18 +240,4 @@ func (g Grid) Marker() string {
 		return g.cfg.marker
 	}
 	return "O"
-}
-
-func buildPath(p point.Point, previous map[point.Point]point.Point) []point.Point {
-	path := []point.Point{p}
-	for {
-		v, ok := previous[p]
-		if !ok {
-			break
-		}
-		path = append(path, v)
-		p = v
-	}
-	slices.Reverse(path)
-	return path
 }
