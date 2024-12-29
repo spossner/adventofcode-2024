@@ -2,6 +2,7 @@ package set
 
 import (
 	"iter"
+	"slices"
 )
 
 type Set[T comparable] map[T]struct{}
@@ -14,10 +15,14 @@ func NewSet[T comparable](items ...T) Set[T] {
 	return set
 }
 
-func (s Set[T]) Clone() Set[T] {
+// Clone clones the set, adds any optional additional items specified and returns the new set.
+func (s Set[T]) Clone(items ...T) Set[T] {
 	newSet := make(Set[T])
 	for k := range s {
 		newSet[k] = struct{}{}
+	}
+	for _, item := range items {
+		newSet[item] = struct{}{}
 	}
 	return newSet
 }
@@ -30,6 +35,10 @@ func (s Set[T]) All() iter.Seq[T] {
 			}
 		}
 	}
+}
+
+func (s Set[T]) List() []T {
+	return slices.Collect(s.All())
 }
 
 func FromSlice[T comparable](sets ...[]T) Set[T] {
@@ -108,4 +117,13 @@ func (s Set[T]) Extend(items iter.Seq[T]) {
 	for item := range items {
 		s[item] = struct{}{}
 	}
+}
+
+func (s Set[T]) Pop() T {
+	var zero T
+	for item, _ := range s {
+		delete(s, item)
+		return item
+	}
+	return zero
 }

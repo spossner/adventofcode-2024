@@ -278,3 +278,22 @@ func TestSet_Union(t *testing.T) {
 		})
 	}
 }
+
+func TestSet_Pop(t *testing.T) {
+	type testCase[T comparable] struct {
+		name string
+		s    Set[T]
+		want T
+	}
+	tests := []testCase[int]{
+		{"simple", NewSet[int](1, 2, 3, 5, 8, 13, 21), 6},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.s.Pop()
+			if len(tt.s) != tt.want {
+				t.Errorf("Pop() = %v leaving %v elements in set", got, tt.want)
+			}
+		})
+	}
+}
