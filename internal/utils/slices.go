@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"golang.org/x/exp/constraints"
 	"iter"
 	"slices"
 )
@@ -70,11 +71,11 @@ func MapI[T, U any](iterable iter.Seq[T], f func(T) (U, error)) ([]U, error) {
 	return result, nil
 }
 
-func Reduce[T any, U Number](slice []T, fn func(acc U, item T) U, initial U) U {
+func Reduce[T, U any](slice []T, fn func(acc U, item T) U, initial U) U {
 	return ReduceI(slices.Values(slice), fn, initial)
 }
 
-func ReduceI[T any, U Number](iterable iter.Seq[T], fn func(acc U, item T) U, initial U) U {
+func ReduceI[T, U any](iterable iter.Seq[T], fn func(acc U, item T) U, initial U) U {
 	acc := initial
 	for item := range iterable {
 		acc = fn(acc, item)
@@ -122,14 +123,14 @@ func Pick4From[T any](slice []T) (T, T, T, T) {
 	return slice[0], slice[1], slice[2], slice[3]
 }
 
-func Sum[T Number](slice []T) T {
+func Sum[T constraints.Ordered](slice []T) T {
 	var zero T
 	return Reduce(slice, func(acc T, item T) T {
 		return acc + item
 	}, zero)
 }
 
-func Product[T Number](slice []T) T {
+func Product[T constraints.Integer | constraints.Float](slice []T) T {
 	var one T
 	one++
 

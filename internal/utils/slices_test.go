@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"github.com/spossner/aoc2024/internal/grid"
-	"github.com/spossner/aoc2024/internal/point"
 	"reflect"
 	"strconv"
 	"testing"
@@ -215,12 +213,12 @@ func TestBatched(t *testing.T) {
 }
 
 func TestReduce(t *testing.T) {
-	type args[T any, U Number] struct {
+	type args[T, U any] struct {
 		slice   []T
 		fn      func(U, T) U
 		initial U
 	}
-	type testCase[T any, U Number] struct {
+	type testCase[T, U any] struct {
 		name string
 		args args[T, U]
 		want U
@@ -239,10 +237,10 @@ func TestReduce(t *testing.T) {
 }
 
 func TestSumInt(t *testing.T) {
-	type args[T Number] struct {
+	type args[T any] struct {
 		slice []T
 	}
-	type testCase[T Number] struct {
+	type testCase[T any] struct {
 		name string
 		args args[T]
 		want T
@@ -262,10 +260,10 @@ func TestSumInt(t *testing.T) {
 }
 
 func TestSumFloat(t *testing.T) {
-	type args[T Number] struct {
+	type args[T any] struct {
 		slice []T
 	}
-	type testCase[T Number] struct {
+	type testCase[T any] struct {
 		name string
 		args args[T]
 		want T
@@ -277,28 +275,6 @@ func TestSumFloat(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := Sum(tt.args.slice); got != tt.want {
 				t.Errorf("Sum() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestPickFrom(t *testing.T) {
-	type args[T any] struct {
-		matrix [][]T
-		pos    point.Point
-	}
-	type testCase[T any] struct {
-		name string
-		args args[T]
-		want T
-	}
-	tests := []testCase[string]{
-		{"simple", args[string]{[][]string{{"A", "B", "C"}, {"D", "E", "F"}, {"G", "H", "I"}}, point.Point{1, 1}}, "E"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := grid.PickFrom(tt.args.matrix, tt.args.pos); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("PickFrom() = %v, want %v", got, tt.want)
 			}
 		})
 	}

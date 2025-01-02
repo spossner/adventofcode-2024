@@ -76,3 +76,30 @@ func TestLCM(t *testing.T) {
 		})
 	}
 }
+
+func TestMod(t *testing.T) {
+	type args[T constraints.Integer] struct {
+		x T
+		y T
+	}
+	type testCase[T constraints.Integer] struct {
+		name string
+		args args[T]
+		want T
+	}
+	tests := []testCase[int]{
+		{"simple", args[int]{7, 3}, 1},
+		{"matching", args[int]{9, 3}, 0},
+		{"little", args[int]{3, 9}, 3},
+		{"big", args[int]{372387203, 9}, 8},
+		{"negative", args[int]{-5, 9}, 4},
+		{"big negative", args[int]{-28975, 9}, 5},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Mod(tt.args.x, tt.args.y); got != tt.want {
+				t.Errorf("Mod() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
