@@ -27,11 +27,12 @@ func part2(dev bool) any {
 func solve(cfg *config.Config, isPart2 bool) any {
 	defer utils.Duration(fmt.Sprintf("DAY %d, PART %d", cfg.Day, utils.If(isPart2, 2, 1)))()
 
-	p := puzzle.NewPuzzle(cfg)
-	result := 0
 	if isPart2 {
 		fmt.Println("PART2")
 	}
+
+	p := puzzle.NewPuzzle(cfg)
+	result := 0
 
 	fmt.Println(p.Data)
 
