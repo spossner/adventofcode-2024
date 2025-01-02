@@ -40,8 +40,8 @@ func TestNewSet(t *testing.T) {
 	tests := []testCase[string]{
 		{"none", args[string]{[]string{}}, Set[string]{}},
 		{"simple", args[string]{[]string{"Seppo"}}, Set[string]{"Seppo": struct{}{}}},
-		{"double", args[string]{[]string{"Seppo", "Vera"}}, Set[string]{"Seppo": struct{}{}, "Vera": struct{}{}}},
-		{"multi", args[string]{[]string{"a", "A", "b", "B", "c", "C", "d", "D", "e", "E"}}, Set[string]{"a": struct{}{}, "b": struct{}{}, "c": struct{}{}, "d": struct{}{}, "e": struct{}{}, "A": struct{}{}, "B": struct{}{}, "C": struct{}{}, "D": struct{}{}, "E": struct{}{}}},
+		{"double", args[string]{[]string{"Seppo", "Vera"}}, FromSlice([]string{"Seppo", "Vera"})},
+		{"multi", args[string]{[]string{"a", "A", "b", "B", "c", "C", "d", "D", "e", "E"}}, FromSlice([]string{"a", "A", "b", "B", "c", "C", "d", "D", "e", "E"})},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -116,35 +116,37 @@ func TestSet_Intersect(t *testing.T) {
 		{"equal sets",
 			args[int]{
 				[]Set[int]{
-					{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}},
-					{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}}},
-			}, Set[int]{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}},
+					NewSet(1, 2, 3, 5, 8, 13, 21, 34),
+					NewSet(1, 2, 3, 5, 8, 13, 21, 34),
+				},
+			}, NewSet(1, 2, 3, 5, 8, 13, 21, 34),
 		},
-		{"all items in multiple sets",
-
+		{"all items in all sets",
 			args[int]{
 				[]Set[int]{
-					{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}},
-					{1: struct{}{}, 2: struct{}{}, 3: struct{}{}},
-					{5: struct{}{}, 8: struct{}{}},
-					{13: struct{}{}, 21: struct{}{}},
-					{34: struct{}{}}},
-			}, Set[int]{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}},
+					NewSet(1, 2, 3, 5, 8, 13, 21, 34),
+					NewSet(1, 2, 3, 5, 8, 13, 21, 34),
+					NewSet(1, 2, 3, 5, 8, 13, 21, 34),
+					NewSet(1, 2, 3, 5, 8, 13, 21, 34),
+				},
+			}, NewSet(1, 2, 3, 5, 8, 13, 21, 34),
 		},
 		{"some items",
 			args[int]{
 				[]Set[int]{
-					{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}},
-					{1: struct{}{}, 2: struct{}{}, 3: struct{}{}},
-					{34: struct{}{}}},
-			}, Set[int]{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 34: struct{}{}},
+					NewSet(1, 2, 3, 5, 8, 13, 21, 34),
+					NewSet(1, 2, 34),
+					NewSet(1, 34),
+				},
+			}, NewSet(1, 34),
 		},
 		{"no intersection",
 			args[int]{
 				[]Set[int]{
-					{1: struct{}{}, 2: struct{}{}, 3: struct{}{}, 5: struct{}{}, 8: struct{}{}, 13: struct{}{}, 21: struct{}{}, 34: struct{}{}},
-					{10: struct{}{}, 20: struct{}{}, 30: struct{}{}},
-					{340: struct{}{}}},
+					NewSet(1, 2, 3, 5, 8, 13, 21, 34),
+					NewSet(10, 20, 30),
+					NewSet(340),
+				},
 			}, Set[int]{},
 		},
 		{"including empty set",
@@ -293,6 +295,31 @@ func TestSet_Pop(t *testing.T) {
 			got := tt.s.Pop()
 			if len(tt.s) != tt.want {
 				t.Errorf("Pop() = %v leaving %v elements in set", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSet_MultiContains(t *testing.T) {
+	type args[T comparable] struct {
+		first T
+		items []T
+	}
+	type testCase[T comparable] struct {
+		name string
+		s    Set[T]
+		args args[T]
+		want bool
+	}
+	tests := []testCase[int]{
+		{"simple", NewSet[int](1, 2, 3, 5, 8, 13), args[int]{1, []int{3, 5, 8}}, true},
+		{"some", NewSet[int](1, 2, 3, 5, 8, 13), args[int]{1, []int{2, 3, 5, 8, 13}}, true},
+		{"some not", NewSet[int](1, 2, 3, 5, 8, 13), args[int]{3, []int{5, 13, 21, 34}}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.s.Contains(tt.args.first, tt.args.items...); got != tt.want {
+				t.Errorf("Contains() = %v, want %v", got, tt.want)
 			}
 		})
 	}

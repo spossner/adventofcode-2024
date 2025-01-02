@@ -17,12 +17,9 @@ func NewSet[T comparable](items ...T) Set[T] {
 
 // Clone clones the set, adds any optional additional items specified and returns the new set.
 func (s Set[T]) Clone(items ...T) Set[T] {
-	newSet := make(Set[T])
+	newSet := NewSet[T](items...)
 	for k := range s {
 		newSet[k] = struct{}{}
-	}
-	for _, item := range items {
-		newSet[item] = struct{}{}
 	}
 	return newSet
 }
@@ -51,29 +48,33 @@ func FromSlice[T comparable](sets ...[]T) Set[T] {
 	return set
 }
 
+// Intersect creates a new set containing only items which are included in all given sets
 func Intersect[T comparable](sets ...Set[T]) Set[T] {
-	set := make(Set[T])
 	switch len(sets) {
 	case 0:
-		return set
+		return NewSet[T]()
 	case 1:
-		return sets[0]
+		return sets[0].Clone()
 	}
 
+	set := NewSet[T]()
 Outer:
 	for item := range sets[0] {
 		for _, that := range sets[1:] {
-			if that.Contains(item) {
-				set[item] = struct{}{}
+			if len(that) == 0 {
+				return NewSet[T]()
+			}
+			if !that.Contains(item) {
 				continue Outer
 			}
 		}
+		set[item] = struct{}{}
 	}
 	return set
 }
 
 func Subtract[T comparable](set Set[T], others ...Set[T]) Set[T] {
-	newSet := make(Set[T])
+	newSet := NewSet[T]()
 Outer:
 	for item := range set {
 		for _, that := range others {
@@ -87,7 +88,7 @@ Outer:
 }
 
 func Union[T comparable](sets ...Set[T]) Set[T] {
-	set := make(Set[T])
+	set := NewSet[T]()
 	for _, that := range sets {
 		for item := range that {
 			set[item] = struct{}{}
@@ -96,9 +97,16 @@ func Union[T comparable](sets ...Set[T]) Set[T] {
 	return set
 }
 
-func (s Set[T]) Contains(item T) bool {
-	_, ok := s[item]
-	return ok
+func (s Set[T]) Contains(item T, items ...T) bool {
+	if _, ok := s[item]; !ok {
+		return false
+	}
+	for _, anotherItem := range items {
+		if _, ok := s[anotherItem]; !ok {
+			return false
+		}
+	}
+	return true
 }
 
 func (s Set[T]) Add(items ...T) {
