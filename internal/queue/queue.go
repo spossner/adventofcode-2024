@@ -2,24 +2,22 @@ package queue
 
 import (
 	"fmt"
+	"github.com/spossner/aoc2024/internal/utils"
 	"iter"
+	"strings"
 )
 
-type (
-	Node[T any] struct {
-		Value          T
-		next, previous *Node[T]
-	}
+const INITIAL_SIZE = 8
 
-	Queue[T any] struct {
-		start, end *Node[T]
-		length     int
-	}
-)
+type Queue[T any] struct {
+	data       []T
+	head, tail int
+	length     int
+}
 
 // NewQueue creates a new queue with the given elements (if any).
 func NewQueue[T any](values ...T) *Queue[T] {
-	q := &Queue[T]{nil, nil, 0}
+	q := &Queue[T]{}
 	for _, v := range values {
 		q.Append(v)
 	}
@@ -32,16 +30,12 @@ func (q *Queue[T]) Pop() (T, bool) {
 	if q.length == 0 {
 		return zero, false
 	}
-	n := q.end
-	if q.length == 1 {
-		q.start = nil
-		q.end = nil
-	} else {
-		q.end = q.end.previous
-		q.end.next = nil
-	}
+	q.tail = q.getIndex(q.tail - 1)
+	value := q.data[q.tail]
+	q.data[q.tail] = zero
 	q.length--
-	return n.Value, true
+	q.checkShrink()
+	return value, true
 }
 
 // PopLeft removes and returns an element from the left side of the queue. If no elements are present, PopLeft returns the zero Value and false.
@@ -50,41 +44,27 @@ func (q *Queue[T]) PopLeft() (T, bool) {
 	if q.length == 0 {
 		return zero, false
 	}
-	n := q.start
-	if q.length == 1 {
-		q.start = nil
-		q.end = nil
-	} else {
-		q.start = q.start.next
-		q.start.previous = nil
-	}
+	value := q.data[q.head]
+	q.data[q.head] = zero
+	q.head = q.getIndex(q.head + 1)
 	q.length--
-	return n.Value, true
+	q.checkShrink()
+	return value, true
 }
 
 // Append adds the Value to the right side of the queue.
 func (q *Queue[T]) Append(value T) {
-	n := &Node[T]{value, nil, q.end}
-	if q.length == 0 {
-		q.start = n
-		q.end = n
-	} else {
-		q.end.next = n
-		q.end = n
-	}
+	q.checkGrow()
+	q.data[q.tail] = value
+	q.tail = q.getIndex(q.tail + 1)
 	q.length++
 }
 
 // AppendLeft adds the Value to the left side of the queue.
 func (q *Queue[T]) AppendLeft(value T) {
-	n := &Node[T]{value, q.start, nil}
-	if q.length == 0 {
-		q.start = n
-		q.end = n
-	} else {
-		q.start.previous = n
-		q.start = n
-	}
+	q.checkGrow()
+	q.head = q.getIndex(q.head - 1)
+	q.data[q.head] = value
 	q.length++
 }
 
@@ -104,8 +84,9 @@ func (q *Queue[T]) ExtendLeft(values ...T) {
 
 // Clear removes all elements from the queue leaving it with length 0.
 func (q *Queue[T]) Clear() {
-	q.start = nil
-	q.end = nil
+	q.data = nil
+	q.head = 0
+	q.tail = 0
 	q.length = 0
 }
 
@@ -120,64 +101,31 @@ func (q *Queue[T]) Empty() bool {
 }
 
 // Peek returns the first item in the queue without removing it.
-func (q *Queue[T]) Peek() any {
+func (q *Queue[T]) Peek() T {
+	var zero T
 	if q.length == 0 {
-		return nil
+		return zero
 	}
-	return q.start.Value
+	return q.data[q.head]
 }
 
-// InsertBefore inserts the given Value before the given node.
-// Note that InsertBefore expects the node to be part of this queue.
-func (q *Queue[T]) InsertBefore(node *Node[T], value T) {
-	n := &Node[T]{value, node, node.previous}
-	if node.previous != nil {
-		node.previous.next = n
-	} else {
-		q.start = n
+// PeekLast returns the last item in the queue without removing it.
+func (q *Queue[T]) PeekLast() T {
+	var zero T
+	if q.length == 0 {
+		return zero
 	}
-	node.previous = n
-
-	q.length++
-}
-
-// InsertAfter inserts the given Value after the given node.
-// Note that InsertAfter expects the node to be part of this queue.
-func (q *Queue[T]) InsertAfter(node *Node[T], value T) {
-	n := &Node[T]{value, node.next, node}
-	if node.next != nil {
-		node.next.previous = n
-	} else {
-		q.end = n
-	}
-	node.next = n
-	q.length++
+	return q.data[q.getIndex(q.tail-1)]
 }
 
 func (q *Queue[T]) All() iter.Seq2[int, T] {
 	return func(yield func(int, T) bool) {
-		el := q.start
-		i := 0
-		for el != nil {
-			if !yield(i, el.Value) {
+		id := q.head
+		for i := range q.length {
+			if !yield(i, q.data[id]) {
 				break
 			}
-			el = el.next
-			i++
-		}
-	}
-}
-
-func (q *Queue[T]) AllNodes() iter.Seq2[int, *Node[T]] {
-	return func(yield func(int, *Node[T]) bool) {
-		el := q.start
-		i := 0
-		for el != nil {
-			if !yield(i, el) {
-				break
-			}
-			el = el.next
-			i++
+			id = q.getIndex(id + 1)
 		}
 	}
 }
@@ -195,5 +143,47 @@ func (q *Queue[T]) String() string {
 	for i, v := range q.All() {
 		buf[i] = fmt.Sprintf("%v", v)
 	}
-	return fmt.Sprintf("%v", buf)
+	return strings.Join(buf, ",")
+}
+
+func (q *Queue[T]) getIndex(i int) int {
+	return i & (len(q.data) - 1) // modulo for queues with len(ring buffer) power of 2
+}
+
+func (q *Queue[T]) checkShrink() {
+	if q.length < len(q.data)>>2 {
+		q.setSize(len(q.data) >> 1)
+	}
+}
+
+func (q *Queue[T]) checkGrow() {
+	if q.length == len(q.data) {
+		q.setSize(len(q.data) << 1)
+	}
+}
+
+func (q *Queue[T]) setSize(newSize int) {
+	newSize = utils.Max(newSize, INITIAL_SIZE)
+	if len(q.data) == newSize {
+		return
+	}
+	if newSize&(newSize-1) != 0 {
+		panic("new size must be 2^n")
+	}
+
+	newData := make([]T, newSize)
+	//for i, item := range q.All() {
+	//	newData[i] = item
+	//}
+
+	if q.head < q.tail {
+		copy(newData, q.data[q.head:q.tail])
+	} else {
+		copy(newData, q.data[q.head:])
+		copy(newData[len(q.data)-q.head:], q.data[:q.tail])
+	}
+
+	q.data = newData
+	q.head = 0
+	q.tail = q.length
 }
