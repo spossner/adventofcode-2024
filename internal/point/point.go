@@ -2,6 +2,7 @@ package point
 
 import (
 	"fmt"
+	"github.com/spossner/aoc2024/internal/utils"
 	"iter"
 )
 
@@ -151,13 +152,6 @@ func (p Point) Adjacents() iter.Seq2[Point, Point] {
 	}
 }
 
-func abs(n int) int {
-	if n < 0 {
-		return -n
-	}
-	return n
-}
-
 func (p Point) Manhatten(other Point) int {
-	return abs(p.X-other.X) + abs(p.Y-other.Y)
+	return utils.AbsInt(p.X-other.X) + utils.AbsInt(p.Y-other.Y)
 }
