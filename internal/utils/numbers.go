@@ -12,6 +12,32 @@ func AbsInt[T constraints.Integer | constraints.Float](n T) T {
 	return n
 }
 
+func Min[T constraints.Ordered](a, b T, nums ...T) (lower T) {
+	lower = a
+	if b < a {
+		lower = b
+	}
+	for _, m := range nums {
+		if m < lower {
+			lower = m
+		}
+	}
+	return lower
+}
+
+func Max[T constraints.Ordered](a, b T, nums ...T) (upper T) {
+	upper = a
+	if b > a {
+		upper = b
+	}
+	for _, m := range nums {
+		if m > upper {
+			upper = m
+		}
+	}
+	return upper
+}
+
 // MinMax returns the minimum and maximum number (in that order) from the given values
 func MinMax[T constraints.Ordered](a, b T, nums ...T) (lower T, upper T) {
 	lower, upper = a, b

@@ -39,9 +39,7 @@ func (i Interval) Intersect(other Interval) Interval {
 		return Interval{}
 	}
 
-	_, from := utils.MinMax(i.From, other.From)
-	to, _ := utils.MinMax(i.To, other.To)
-	return Interval{from, to}
+	return Interval{utils.Max(i.From, other.From), utils.Min(i.To, other.To)}
 }
 
 // All iterates all values in the interval

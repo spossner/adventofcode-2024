@@ -93,7 +93,7 @@ func calculateKeyPresses(g grid.Grid, sequence string, robot int, cache map[step
 			best := math.MaxInt
 			for _, move := range paths {
 				// check key presses of all paths in subsequent directional keypads... and choose the one with min length
-				best, _ = utils.MinMax(best, calculateKeyPresses(DIRECTIONAL, move, robot-1, cache))
+				best = utils.Min(best, calculateKeyPresses(DIRECTIONAL, move, robot-1, cache))
 			}
 			length += best
 		}
